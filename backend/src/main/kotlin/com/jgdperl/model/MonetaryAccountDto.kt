@@ -22,30 +22,6 @@ data class MonetaryAccountDto(
     val displayName: String,
 ) {
     @Serializable
-    data class Avatar(
-        val uuid: String,
-        @SerialName("anchor_uuid")
-        val anchorUuid: String,
-        val image: List<Image>
-    )
-
-    @Serializable
-    data class Image(
-        @SerialName("attachment_public_uuid")
-        val attachmentPublicUuid: String,
-        @SerialName("content_type")
-        val contentType: String,
-        val height: Int,
-        val width: Int
-    )
-
-    @Serializable
-    data class MoneyValue(
-        val value: String,
-        val currency: String
-    )
-
-    @Serializable
     data class Alias(
         val type: String,
         val value: String,

@@ -19,4 +19,9 @@ const pwaManifest: Partial<VitePWAOptions> = {
 export default defineConfig({
     base: "./",
     plugins: [react(), VitePWA(pwaManifest)],
+    //plugins: [react()],
+    build: {
+        outDir: "../backend/src/main/resources/dist",
+        emptyOutDir: true
+    }
 })

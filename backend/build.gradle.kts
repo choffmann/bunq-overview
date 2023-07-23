@@ -7,6 +7,7 @@ plugins {
     kotlin("jvm") version "1.9.0"
     id("io.ktor.plugin") version "2.3.2"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.0"
+    id("co.uzzu.dotenv.gradle") version "1.1.0"
 }
 
 group = "com.jgdperl"

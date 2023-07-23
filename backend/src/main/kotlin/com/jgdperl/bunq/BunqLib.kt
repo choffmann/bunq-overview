@@ -3,19 +3,24 @@ package com.jgdperl.bunq
 import com.bunq.sdk.context.ApiContext
 import com.bunq.sdk.context.ApiEnvironmentType
 import com.bunq.sdk.context.BunqContext
+import com.bunq.sdk.http.Pagination
+import com.bunq.sdk.model.generated.endpoint.AttachmentPublicContent
 import com.bunq.sdk.model.generated.endpoint.MonetaryAccountBank
 import com.bunq.sdk.model.generated.endpoint.Payment
 import java.io.File
 
-const val API_KEY = "sandbox_0955aad5dbd1f480a9729f985776f57e6f79751b0a17229aa8ac0a17"
 const val DEVICE_DESCRIPTION = "bunq-overview"
-const val FILE_BUNQ_CONF = "bunq-sandbox.conf"
-const val IBAN = "DE37370190001010279078"
-const val IBAN_SANBOX = "NL70BUNQ2061192157"
+const val FILE_BUNQ_CONF = "bunq-production.conf"
+const val DEFAULT_PAGINATION_COUNT = 10
 
 class BunqLib {
+    private val iban: String
+    private val apiKey: String
+
     init {
         setupContext()
+        iban = System.getenv("IBAN") ?: throw Exception("IBAN not set")
+        apiKey = System.getenv("API_KEY") ?: throw Exception("API_KEY not set")
     }
 
     fun updateContext() {
@@ -24,7 +29,8 @@ class BunqLib {
 
     private fun setupContext() {
         if (bunqFileNotExists()) {
-            ApiContext.create(ApiEnvironmentType.SANDBOX, API_KEY, DEVICE_DESCRIPTION).save(FILE_BUNQ_CONF)
+            println("Create Bunq .conf file")
+            ApiContext.create(ApiEnvironmentType.PRODUCTION, apiKey, DEVICE_DESCRIPTION).save(FILE_BUNQ_CONF)
         }
 
         val apiContext = ApiContext.restore(FILE_BUNQ_CONF)
@@ -37,7 +43,17 @@ class BunqLib {
 
     fun getMonetaryAccount(): MonetaryAccountBank {
         return MonetaryAccountBank.list().value.first { account ->
-            account.alias.any { it.value.equals(IBAN_SANBOX) }
+            account.alias.any { it.value.equals(iban) }
         }
     }
+
+    fun getPayments(): List<Payment> {
+        val pagination = Pagination()
+        pagination.count = DEFAULT_PAGINATION_COUNT
+        return Payment.list(getMonetaryAccount().id, pagination.urlParamsCountOnly).value.filter { payment ->
+            payment.alias.iban == iban
+        }
+    }
+
+    fun getImage(uuid: String) = AttachmentPublicContent.list(uuid).value
 }
