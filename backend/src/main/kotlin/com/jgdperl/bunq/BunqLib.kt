@@ -11,16 +11,14 @@ import java.io.File
 
 const val DEVICE_DESCRIPTION = "bunq-overview"
 const val FILE_BUNQ_CONF = "bunq-production.conf"
-const val DEFAULT_PAGINATION_COUNT = 10
+const val DEFAULT_PAGINATION_COUNT = 100
 
 class BunqLib {
-    private val iban: String
-    private val apiKey: String
+    private val iban: String = System.getenv("IBAN") ?: throw Exception("IBAN not set")
+    private val apiKey: String = System.getenv("API_KEY") ?: throw Exception("API_KEY not set")
 
     init {
         setupContext()
-        iban = System.getenv("IBAN") ?: throw Exception("IBAN not set")
-        apiKey = System.getenv("API_KEY") ?: throw Exception("API_KEY not set")
     }
 
     fun updateContext() {
@@ -55,5 +53,5 @@ class BunqLib {
         }
     }
 
-    fun getImage(uuid: String) = AttachmentPublicContent.list(uuid).value
+    fun getImage(uuid: String): ByteArray = AttachmentPublicContent.list(uuid).value
 }
