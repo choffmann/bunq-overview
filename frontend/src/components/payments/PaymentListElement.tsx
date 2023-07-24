@@ -17,7 +17,9 @@ const PaymentListElement = ({payment}: PaymentListElementProps) => {
     }
 
     return (
-        <ListItem secondaryAction={
+        <ListItem
+            key={payment.id}
+            secondaryAction={
             <Typography fontWeight="bold">{payment.amount.value} €</Typography>
         }>
             <ListItemAvatar>
