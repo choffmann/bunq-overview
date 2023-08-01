@@ -11,16 +11,16 @@ import java.io.File
 
 const val DEVICE_DESCRIPTION = "bunq-overview"
 const val FILE_BUNQ_CONF = "bunq-production.conf"
-const val DEFAULT_PAGINATION_COUNT = 10
+const val DEFAULT_PAGINATION_COUNT = 100
 
 class BunqLib {
-    private val iban: String
-    private val apiKey: String
+    private val iban: String = System.getenv("IBAN") ?: throw Exception("IBAN not set")
+    private val apiKey: String = System.getenv("API_KEY") ?: throw Exception("API_KEY not set")
+    lateinit var monetaryAccountBank: MonetaryAccountBank
 
     init {
         setupContext()
-        iban = System.getenv("IBAN") ?: throw Exception("IBAN not set")
-        apiKey = System.getenv("API_KEY") ?: throw Exception("API_KEY not set")
+        getMonetaryAccount()
     }
 
     fun updateContext() {
@@ -41,8 +41,8 @@ class BunqLib {
 
     private fun bunqFileNotExists() = !File(FILE_BUNQ_CONF).exists()
 
-    fun getMonetaryAccount(): MonetaryAccountBank {
-        return MonetaryAccountBank.list().value.first { account ->
+    private fun getMonetaryAccount() {
+        monetaryAccountBank = MonetaryAccountBank.list().value.first { account ->
             account.alias.any { it.value.equals(iban) }
         }
     }
@@ -50,10 +50,10 @@ class BunqLib {
     fun getPayments(): List<Payment> {
         val pagination = Pagination()
         pagination.count = DEFAULT_PAGINATION_COUNT
-        return Payment.list(getMonetaryAccount().id, pagination.urlParamsCountOnly).value.filter { payment ->
+        return Payment.list(monetaryAccountBank.id, pagination.urlParamsCountOnly).value.filter { payment ->
             payment.alias.iban == iban
         }
     }
 
-    fun getImage(uuid: String) = AttachmentPublicContent.list(uuid).value
+    fun getImage(uuid: String): ByteArray = AttachmentPublicContent.list(uuid).value
 }
