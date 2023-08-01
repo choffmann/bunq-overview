@@ -3,7 +3,7 @@ import React, {useContext} from "react";
 
 export interface MonetaryAccountContextProps {
     data: MonetaryAccountDto,
-    isLoading: boolean,
+    isFetching: boolean,
     isError: boolean
 }
 

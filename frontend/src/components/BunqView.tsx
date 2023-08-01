@@ -4,10 +4,10 @@ import PaymentsList from "./payments/PaymentsList.tsx";
 import BalanceView from "./balance/BalanceView.tsx";
 
 const BunqView = () => {
-    const {data, isLoading} = useMonetaryAccountContext()
+    const {data, isFetching} = useMonetaryAccountContext()
     return (
         <>
-            {isLoading ? <LinearProgress/> :
+            {isFetching ? <LinearProgress/> :
                 <Container>
                     <BalanceView monetaryAccount={data}/>
                     <PaymentsList/>
