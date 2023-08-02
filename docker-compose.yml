@@ -1,0 +1,10 @@
+services:
+  app:
+    image: choffmann/bunq-overview
+    build: .
+    ports:
+      - "8080:8080"
+networks:
+  app:
+    name: hassio
+    external: true
