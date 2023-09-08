@@ -1,12 +1,13 @@
 services:
-  app:
-    image: bunq-overview
-    build: https://github.com/choffmann/bunq-overview.git#main
-    networks:
-      - app-network
+  backend:
+    image: bunq-backend
+    build: backend/.
     ports:
       - "8080:8080"
-networks:
-  app-network:
-    name: hassio
-    external: true
+  frontend:
+    image: bunq-frontend
+    build: frontend/.
+    ports:
+      - "80:5173"
+    environment:
+      - VITE_API_URL="http://backend:8080"

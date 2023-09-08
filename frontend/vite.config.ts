@@ -88,5 +88,13 @@ export default defineConfig({
     build: {
         outDir: "../backend/src/main/resources/dist",
         emptyOutDir: true
+    },
+    server: {
+        watch: {
+            usePolling: true,
+        },
+        host: true,
+        strictPort: true,
+        port: 5173,
     }
 })
