@@ -6,8 +6,6 @@ import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.sessions.*
 
-const val REDIRECT_LOGIN_URL = "http://localhost:5173/login"
-
 fun Application.configureSecurity() {
     install(Authentication) {
         form("auth-form") {
@@ -26,7 +24,7 @@ fun Application.configureSecurity() {
                 } else null
             }
             challenge {
-                call.respondRedirect(REDIRECT_LOGIN_URL)
+                call.respondText("Not authorized")
             }
         }
     }

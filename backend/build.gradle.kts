@@ -3,6 +3,7 @@ val kotlin_version: String by project
 val logback_version: String by project
 val bunq_version: String by project
 val dotenv_version: String by project
+val exposed_version: String by project
 
 plugins {
     kotlin("jvm") version "1.9.0"
@@ -47,4 +48,10 @@ dependencies {
 
     implementation("com.github.bunq:sdk_java:$bunq_version")
     implementation("io.github.cdimascio:dotenv-kotlin:$dotenv_version")
+
+    implementation("org.postgresql:postgresql:42.2.27")
+    implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
+    implementation("de.mkammerer:argon2-jvm:2.11")
 }
