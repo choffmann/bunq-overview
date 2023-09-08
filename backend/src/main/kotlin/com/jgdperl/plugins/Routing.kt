@@ -15,7 +15,7 @@ fun Application.configureRouting() {
         staticResources("/", "dist")
         route("/api") {
             get("/account") {
-                call.respond(bunq.getMonetaryAccount().toDto())
+                call.respond(bunq.monetaryAccountBank.toDto())
                 bunq.updateContext()
             }
 

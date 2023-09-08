@@ -9,17 +9,82 @@ const pwaManifest: Partial<VitePWAOptions> = {
     includeAssets: ["favicon.ico"],
     manifest: {
         name: "BUNQ Overview",
+        short_name: "BUNQ",
         description: "Eine übersicht über unser BUNQ Konto",
+        theme_color: "#ffffff",
+        background_color: "#ffffff",
         start_url: "./",
+        scope: "./",
+        id: "./",
         display: "standalone",
-        scope: "/",
+        icons: [
+            {
+                src: "assets/icons/logo_square-72.png",
+                sizes: "72x72",
+                type: "image/png",
+                purpose: "maskable"
+            },
+            {
+                src: "assets/icons/logo_square-96.png",
+                sizes: "96x96",
+                type: "image/png",
+                purpose: "maskable"
+            },
+            {
+                src: "assets/icons/logo_square-120.png",
+                sizes: "120x120",
+                type: "image/png",
+                purpose: "maskable"
+            },
+            {
+                src: "assets/icons/logo_square-128.png",
+                sizes: "128x128",
+                type: "image/png",
+                purpose: "maskable"
+            },
+            {
+                src: "assets/icons/logo_square-144.png",
+                sizes: "144x144",
+                type: "image/png",
+                purpose: "any"
+            },
+            {
+                src: "assets/icons/logo_square-152.png",
+                sizes: "152x152",
+                type: "image/png",
+                purpose: "maskable"
+            },
+            {
+                src: "assets/icons/logo_square-180.png",
+                sizes: "180x180",
+                type: "image/png",
+                purpose: "maskable"
+            },
+            {
+                src: "assets/icons/logo_square-192.png",
+                sizes: "192x192",
+                type: "image/png",
+                purpose: "maskable"
+            },
+            {
+                src: "assets/icons/logo_square-384.png",
+                sizes: "384x384",
+                type: "image/png",
+                purpose: "maskable"
+            },
+            {
+                src: "assets/icons/logo_square-512.png",
+                sizes: "512x512",
+                type: "image/png",
+                purpose: "maskable"
+            },
+        ]
     }
 }
 
 export default defineConfig({
     base: "./",
     plugins: [react(), VitePWA(pwaManifest)],
-    //plugins: [react()],
     build: {
         outDir: "../backend/src/main/resources/dist",
         emptyOutDir: true

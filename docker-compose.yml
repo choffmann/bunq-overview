@@ -1,0 +1,12 @@
+services:
+  app:
+    image: bunq-overview
+    build: https://github.com/choffmann/bunq-overview.git#main
+    networks:
+      - app-network
+    ports:
+      - "8080:8080"
+networks:
+  app-network:
+    name: hassio
+    external: true

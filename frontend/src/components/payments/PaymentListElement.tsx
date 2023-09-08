@@ -10,7 +10,8 @@ const PaymentListElement = ({payment}: PaymentListElementProps) => {
     const handleAvatar = () => {
         const image = payment.counterparty_alias.avatar?.image
         if (image != undefined) {
-            return <Avatar alt="counterparty avatar" src={`http://localhost:8080/api/attachment/${image[0].attachment_public_uuid}`}/>
+            return <Avatar alt="counterparty avatar"
+                           src={`http://localhost:8080/api/attachment/${image[0].attachment_public_uuid}`}/>
         } else {
             return <Avatar/>
         }
@@ -20,8 +21,8 @@ const PaymentListElement = ({payment}: PaymentListElementProps) => {
         <ListItem
             key={payment.id}
             secondaryAction={
-            <Typography fontWeight="bold">{payment.amount.value} €</Typography>
-        }>
+                <Typography fontWeight="bold">{payment.amount.value} €</Typography>
+            }>
             <ListItemAvatar>
                 {handleAvatar()}
             </ListItemAvatar>
