@@ -43,3 +43,4 @@ bin/
 
 bunq-sandbox.conf
 bunq-production.conf
+/backend/env/production.env

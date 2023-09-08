@@ -7,15 +7,18 @@ import com.bunq.sdk.http.Pagination
 import com.bunq.sdk.model.generated.endpoint.AttachmentPublicContent
 import com.bunq.sdk.model.generated.endpoint.MonetaryAccountBank
 import com.bunq.sdk.model.generated.endpoint.Payment
+import com.jgdperl.config.DotEnv
+import com.jgdperl.config.DotEnv.apiKey
+import com.jgdperl.config.DotEnv.iban
+import com.jgdperl.config.DotEnv.isProduction
 import java.io.File
 
 const val DEVICE_DESCRIPTION = "bunq-overview"
-const val FILE_BUNQ_CONF = "bunq-production.conf"
 const val DEFAULT_PAGINATION_COUNT = 100
 
 class BunqLib {
-    private val iban: String = System.getenv("IBAN") ?: throw Exception("IBAN not set")
-    private val apiKey: String = System.getenv("API_KEY") ?: throw Exception("API_KEY not set")
+    private val apiEnvironment = if (isProduction) ApiEnvironmentType.PRODUCTION else ApiEnvironmentType.SANDBOX
+    private val confFileName = if (isProduction) "bunq-production.conf" else "bunq-sandbox.conf"
     lateinit var monetaryAccountBank: MonetaryAccountBank
 
     init {
@@ -24,22 +27,22 @@ class BunqLib {
     }
 
     fun updateContext() {
-        BunqContext.getApiContext().save(FILE_BUNQ_CONF)
+        BunqContext.getApiContext().save(confFileName)
     }
 
     private fun setupContext() {
         if (bunqFileNotExists()) {
             println("Create Bunq .conf file")
-            ApiContext.create(ApiEnvironmentType.PRODUCTION, apiKey, DEVICE_DESCRIPTION).save(FILE_BUNQ_CONF)
+            ApiContext.create(apiEnvironment, apiKey, DEVICE_DESCRIPTION).save(confFileName)
         }
 
-        val apiContext = ApiContext.restore(FILE_BUNQ_CONF)
+        val apiContext = ApiContext.restore(confFileName)
         apiContext.ensureSessionActive()
-        apiContext.save(FILE_BUNQ_CONF)
+        apiContext.save(confFileName)
         BunqContext.loadApiContext(apiContext)
     }
 
-    private fun bunqFileNotExists() = !File(FILE_BUNQ_CONF).exists()
+    private fun bunqFileNotExists() = !File(confFileName).exists()
 
     private fun getMonetaryAccount() {
         monetaryAccountBank = MonetaryAccountBank.list().value.first { account ->

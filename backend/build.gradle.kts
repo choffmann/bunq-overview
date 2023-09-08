@@ -2,6 +2,7 @@ val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
 val bunq_version: String by project
+val dotenv_version: String by project
 
 plugins {
     kotlin("jvm") version "1.9.0"
@@ -42,4 +43,5 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 
     implementation("com.github.bunq:sdk_java:$bunq_version")
+    implementation("io.github.cdimascio:dotenv-kotlin:$dotenv_version")
 }
