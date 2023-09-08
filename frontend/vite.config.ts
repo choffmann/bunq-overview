@@ -86,7 +86,6 @@ export default defineConfig({
     base: "./",
     plugins: [react(), VitePWA(pwaManifest)],
     build: {
-        outDir: "../backend/src/main/resources/dist",
         emptyOutDir: true
     },
     server: {
