@@ -7,7 +7,6 @@ import com.bunq.sdk.http.Pagination
 import com.bunq.sdk.model.generated.endpoint.AttachmentPublicContent
 import com.bunq.sdk.model.generated.endpoint.MonetaryAccountBank
 import com.bunq.sdk.model.generated.endpoint.Payment
-import com.jgdperl.config.DotEnv
 import com.jgdperl.config.DotEnv.apiKey
 import com.jgdperl.config.DotEnv.iban
 import com.jgdperl.config.DotEnv.isProduction
@@ -19,11 +18,9 @@ const val DEFAULT_PAGINATION_COUNT = 100
 class BunqLib {
     private val apiEnvironment = if (isProduction) ApiEnvironmentType.PRODUCTION else ApiEnvironmentType.SANDBOX
     private val confFileName = if (isProduction) "bunq-production.conf" else "bunq-sandbox.conf"
-    lateinit var monetaryAccountBank: MonetaryAccountBank
 
     init {
         setupContext()
-        getMonetaryAccount()
     }
 
     fun updateContext() {
@@ -44,8 +41,8 @@ class BunqLib {
 
     private fun bunqFileNotExists() = !File(confFileName).exists()
 
-    private fun getMonetaryAccount() {
-        monetaryAccountBank = MonetaryAccountBank.list().value.first { account ->
+    fun getMonetaryAccount(): MonetaryAccountBank {
+        return MonetaryAccountBank.list().value.first { account ->
             account.alias.any { it.value.equals(iban) }
         }
     }
@@ -53,7 +50,7 @@ class BunqLib {
     fun getPayments(): List<Payment> {
         val pagination = Pagination()
         pagination.count = DEFAULT_PAGINATION_COUNT
-        return Payment.list(monetaryAccountBank.id, pagination.urlParamsCountOnly).value.filter { payment ->
+        return Payment.list(getMonetaryAccount().id, pagination.urlParamsCountOnly).value.filter { payment ->
             payment.alias.iban == iban
         }
     }

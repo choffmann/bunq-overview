@@ -8,7 +8,7 @@ const pwaManifest: Partial<VitePWAOptions> = {
     registerType: "prompt",
     includeAssets: ["favicon.ico"],
     manifest: {
-        name: "BUNQ Overview",
+        name: "Wie gehts BUNQ?",
         short_name: "BUNQ",
         description: "Eine übersicht über unser BUNQ Konto",
         theme_color: "#ffffff",

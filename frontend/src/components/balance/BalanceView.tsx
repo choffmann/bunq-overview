@@ -27,7 +27,7 @@ const BalanceView = ({monetaryAccount}: BalanceViewProps) => {
         }}>
             <BalanceCard balance={balance.value} onInfoClick={onInfoButtonClicked}/>
 
-            <MonetaryAccountInfoDialog visible={showDialog} iban={monetaryAccount.alias[0].value}
+            <MonetaryAccountInfoDialog visible={showDialog} iban={monetaryAccount.alias.find(value => value.type === "IBAN")?.value || "Keine IBAN vorhanden"}
                                        onClose={handleCloseInfoDialog}/>
         </Box>
     )
