@@ -1,8 +1,10 @@
 import {Box, Button, Container, Paper, Stack, TextField, Typography} from "@mui/material";
 import {useState} from "react";
+import {Google} from "@mui/icons-material";
 
 export interface LoginPageProps {
     onSubmit: (loginData: LoginFormData) => void
+    onGoogle: () => void
 }
 
 export interface LoginFormData {
@@ -10,7 +12,7 @@ export interface LoginFormData {
     password: string
 }
 
-const LoginPage = ({onSubmit}: LoginPageProps) => {
+const LoginPage = ({onSubmit, onGoogle}: LoginPageProps) => {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
 
@@ -32,6 +34,7 @@ const LoginPage = ({onSubmit}: LoginPageProps) => {
                         <TextField variant="outlined" label="Passwort" type="password" value={password}
                                    onChange={(event) => setPassword(event.target.value)}/>
                         <Button onClick={() => onSubmit({username, password})} variant="contained">Anmelden</Button>
+                        <Button onClick={() => onGoogle()} startIcon={<Google/>}>Mit Google anmelden</Button>
                     </Stack>
                 </Box>
             </Paper>

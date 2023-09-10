@@ -1,11 +1,8 @@
 import React, {useContext} from "react";
+import {User} from "firebase/auth";
 
-export interface AuthContextProps {
-    authenticated: boolean
-    username: string
-}
 
-const AuthContext = React.createContext<AuthContextProps | null>(null)
+const AuthContext = React.createContext<User | null>(null)
 
 export function useAuthContext() {
     const context = useContext(AuthContext)

@@ -1,18 +1,18 @@
 import {QueryClient, QueryClientProvider} from "react-query";
 import MonetaryAccountContainer from "./components/MonetaryAccountContainer.tsx";
 import BunqView from "./components/BunqView.tsx";
-import AuthWrapper from "./components/AuthWrapper.tsx";
+import AuthProvider from "./components/AuthProvider.tsx";
 
 function App() {
     const queryClient = new QueryClient()
     return (
-        <AuthWrapper>
+        <AuthProvider>
             <QueryClientProvider client={queryClient}>
                 <MonetaryAccountContainer>
                     <BunqView/>
                 </MonetaryAccountContainer>
             </QueryClientProvider>
-        </AuthWrapper>
+        </AuthProvider>
     )
 }
 

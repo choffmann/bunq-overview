@@ -29,7 +29,7 @@ class BunqLib {
 
     private fun setupContext() {
         if (bunqFileNotExists()) {
-            println("Create Bunq .conf file")
+            println("Create Bunq .conf file '$confFileName'")
             ApiContext.create(apiEnvironment, apiKey, DEVICE_DESCRIPTION).save(confFileName)
         }
 

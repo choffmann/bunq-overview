@@ -24,6 +24,7 @@ application {
 repositories {
     mavenCentral()
     maven("https://jitpack.io")
+    google()
 }
 
 dependencies {
@@ -54,4 +55,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
     implementation("de.mkammerer:argon2-jvm:2.11")
+
+    implementation("dev.gitlive:firebase-auth:1.10.0")
+
 }

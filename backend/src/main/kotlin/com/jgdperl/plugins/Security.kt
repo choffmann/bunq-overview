@@ -5,33 +5,17 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.sessions.*
+import kotlinx.coroutines.runBlocking
 
 fun Application.configureSecurity() {
     install(Authentication) {
-        form("auth-form") {
-            userParamName = "username"
-            passwordParamName = "password"
-            validate { credentials ->
-                if (credentials.name == credentials.password) {
-                    UserIdPrincipal(credentials.name)
-                } else null
-            }
-        }
-        session<UserSession>("auth-session") {
-            validate { session ->
-                if (session.name.startsWith("jet")) {
-                    session
-                } else null
-            }
-            challenge {
-                call.respondText("Not authorized")
-            }
-        }
-    }
-    install(Sessions) {
-        cookie<UserSession>("user_session") {
-            cookie.path = "/"
-            cookie.maxAgeInSeconds = 60
+        basic("auth") {
+            /*skipWhen { call ->
+                runBlocking {
+                    val token = call.request.headers["token"] ?: return@runBlocking false
+                    //return@runBlocking userAccountsRepository.getAccountByToken(token) != null
+                }
+            }*/
         }
     }
 }
