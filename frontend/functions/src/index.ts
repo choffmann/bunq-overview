@@ -5,6 +5,7 @@ import * as bodyParser from "body-parser";
 import {BunqApiContext} from "./BunqApiContext";
 //import {validateFirebaseIdToken} from "./express/validateFirebaseIdToken";
 import {ensureTokensAndSessionExists} from "./express/ensureTokensAndSessionExists";
+import {ApiResponse} from "./model/ApiResponse";
 
 admin.initializeApp({
     databaseURL: "localhost:8080"
@@ -21,12 +22,21 @@ main.use(bodyParser.urlencoded({ extended: false }));
 app.use(ensureTokensAndSessionExists)
 //app.use(validateFirebaseIdToken)
 
-app.get("/account", async (req, res)  => {
-    const monetaryAccount = await apiContext.account("NL47BUNQ2061979629")
-    console.log("Get Monetary account in index", monetaryAccount)
-    monetaryAccount !== undefined ?
-        res.status(200).json(monetaryAccount) :
-        res.status(404).send("No MonetaryAccount found")
+
+function sendApiResponse<T>(res: express.Response, dto: ApiResponse<T>, messageIfDataUndefined?: string) {
+    if(dto.error !== undefined) res.status(500).json(dto)
+    if(dto.data !== undefined) res.status(200).json(dto)
+    if(dto.data === undefined && dto.error === undefined) res.status(400).send(messageIfDataUndefined || "Something went wrong :(")
+}
+
+app.get("/account/:iban", async (req: express.Request<{ iban: string}>, res)  => {
+    const response = await apiContext.account(req.params.iban)
+    sendApiResponse(res, response, "No MonetaryAccount found")
+})
+
+app.get("/payments/:monetaryId", async (req: express.Request<{monetaryId: string}>, res) => {
+    const response = await apiContext.payments(req.params.monetaryId)
+    sendApiResponse(res, response)
 })
 
 export const bunqApi = functions.https.onRequest(main);

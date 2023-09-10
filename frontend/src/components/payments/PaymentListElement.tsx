@@ -1,4 +1,4 @@
-import {Payment} from "../../model/PaymentDto.ts";
+import {Payment} from "../../../model-api-client/bunq/PaymentDto.ts";
 import {Avatar, ListItem, ListItemAvatar, ListItemText, Typography} from "@mui/material";
 
 export interface PaymentListElementProps {

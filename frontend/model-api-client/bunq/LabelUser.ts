@@ -1,4 +1,4 @@
-import {Avatar} from "./Avatar.ts";
+import {Avatar} from "./MonetaryAccountDto";
 
 export interface LabelUser {
     uuid?: string;

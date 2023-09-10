@@ -1,5 +1,5 @@
 import {MonetaryAccountDto} from "../../model-api-client/bunq/MonetaryAccountDto.ts";
-import {Payment} from "../model/PaymentDto.ts";
+import {Payment} from "../../model-api-client/bunq/PaymentDto.ts";
 
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api"
 

@@ -2,7 +2,7 @@ export default interface MonetaryAccountBank {
     id: number
     created: string
     updated: string
-    alias: Alias[]
+    alias: Pointer[]
     avatar: Avatar
     balance: Balance
     country: string
@@ -24,7 +24,7 @@ export default interface MonetaryAccountBank {
     total_request_pending: TotalRequestPending
 }
 
-export interface Alias {
+export interface Pointer {
     type: string
     value: string
     name: string

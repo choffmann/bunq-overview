@@ -9,15 +9,16 @@ import {BunqConfigRepository} from "./BunqConfigRepository";
 import * as functions from 'firebase-functions'
 import {InstallationResponse} from "./model/InstallationResponse";
 import {DeviceServerResponse} from "./model/DeviceServerResponse";
-import {BunqApiResponse} from "./model/BunqApiResponse";
+import {BunqApiResponse, ErrorResponse} from "./model/BunqApiResponse";
 import {Id, SessionResponse, Token, UserPerson} from "./model/SessionResponse";
 import {SessionContext} from "./SessionContext";
 import MonetaryAccountBank from "model-api-client/bunq/MonetaryAccountDto";
+import {Payment}  from "model-api-client/bunq/Payment";
+import {ApiResponse} from "./model/ApiResponse";
 
+export const MILLISECONDS_IN_SECOND = 1000
 const API_URL = "https://public-api.sandbox.bunq.com/v1"
 const TIME_TO_SESSION_EXPIRY_MINIMUM_SECONDS = 30
-export const MILLISECONDS_IN_SECOND = 1000
-
 
 const defaultBunqTokens: BunqTokens = {
     privateKey: "",
@@ -30,6 +31,15 @@ const defaultBunqSession: BunqSession = {
     sessionToken: "",
     userId: 0,
     expiryTime: new Date()
+}
+
+const defaultHeader = {
+    "X-Bunq-Language": "de_DE",
+    "X-Bunq-Region": "de_DE",
+    "X-Bunq-Geolocation": "0 0 0 0 000",
+    "User-Agent": "BunqOverviewApp",
+    "Content-Type": "application/json",
+    "Cache-Control": "no-cache"
 }
 
 export class BunqApiContext {
@@ -141,13 +151,8 @@ export class BunqApiContext {
         functions.logger.info("Request new installation on BUNQ")
         const options = {
             method: "POST", headers: {
-                "Content-Type": "application/json",
-                "Cache-Control": "no-cache",
-                "User-Agent": "BunqOverviewApp",
-                "X-Bunq-Language": "de_DE",
-                "X-Bunq-Region": "de_DE",
+                ...defaultHeader,
                 "X-Bunq-Request-Id": String(Math.random() * 9),
-                "X-Bunq-Geolocation": "0 0 0 0 000"
             }, body: JSON.stringify({client_public_key: this.bunqConfig.publicKey})
         };
         await this.fetchData("/installation", options, (data => this.bunqConfig = {...this.bunqConfig, installationToken: (data.Response[1] as InstallationResponse).Token.token}));
@@ -157,7 +162,8 @@ export class BunqApiContext {
         functions.logger.info("Register new device on BUNQ")
         const options = {
             method: "POST", headers: {
-                "User-Agent": "BunqOverviewApp", "X-Bunq-Client-Authentication": this.bunqConfig.installationToken
+                ...defaultHeader,
+                "X-Bunq-Client-Authentication": this.bunqConfig.installationToken
             }, body: JSON.stringify({
                 description: "BunqOverviewApp", secret: this.apiKey, "permitted_ips": ["*"]
             })
@@ -172,7 +178,9 @@ export class BunqApiContext {
         const sig = sign.sign(this.bunqConfig.privateKey, "base64");
         const options = {
             method: "POST", headers: {
-                "X-Bunq-Client-Signature": sig, "X-Bunq-Client-Authentication": this.bunqConfig.installationToken
+                ...defaultHeader,
+                "X-Bunq-Client-Signature": sig,
+                "X-Bunq-Client-Authentication": this.bunqConfig.installationToken
             }, body: body
         };
         await this.fetchData("/session-server", options, data => {
@@ -190,10 +198,10 @@ export class BunqApiContext {
         });
     }
 
-    async account(iban: string): Promise<MonetaryAccountBank | undefined> {
+    async account(iban: string): Promise<ApiResponse<MonetaryAccountBank>> {
         const options = {
             method: "GET", headers: {
-                "User-Agent": "BunqOverviewApp",
+                ...defaultHeader,
                 "X-Bunq-Client-Authentication": this.bunqSession.sessionToken
             }
         };
@@ -201,8 +209,29 @@ export class BunqApiContext {
         return await fetch(`${API_URL}/user/${this.bunqSession.userId}/monetary-account`, options)
             .then(res => res.json())
             .then((data: BunqApiResponse) => {
+                if (data.Error !== undefined) throw data.Error
                 const accountList = data.Response.map(value => (value as any).MonetaryAccountBank as MonetaryAccountBank)
-                return accountList.find(account => account.alias.filter(alias => alias.type === "IBAN" || alias.value === iban).length > 0)
+                return {data: accountList.find(account => account.alias.filter(alias => alias.type === "IBAN" || alias.value === iban).length > 0)}
             })
+            .catch((error: ErrorResponse) => ({error}))
+    }
+
+    async payments(monetaryId: string): Promise<ApiResponse<Payment[]>> {
+        const countLimit = 150
+        const options = {
+            method: "GET", headers: {
+                ...defaultHeader,
+                "X-Bunq-Client-Authentication": this.bunqSession.sessionToken
+            }
+        };
+
+        return await fetch(`${API_URL}/user/${this.bunqSession.userId}/monetary-account/${monetaryId}/payment?count=${countLimit}`, options)
+            .then(res => res.json())
+            .then((data: BunqApiResponse) => {
+                if (data.Error !== undefined) throw data.Error
+                const paymentList = data.Response.map(value => (value as any).Payment as Payment)
+                return {data: paymentList}
+            })
+            .catch((error: ErrorResponse) => ({error}))
     }
 }
