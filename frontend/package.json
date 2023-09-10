@@ -1,6 +1,10 @@
 {
   "name": "frontend",
   "private": true,
+  "workspaces": [
+    "model-api-client",
+    "functions"
+  ],
   "version": "0.0.0",
   "type": "module",
   "scripts": {

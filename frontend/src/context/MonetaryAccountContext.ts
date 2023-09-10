@@ -1,4 +1,4 @@
-import {MonetaryAccountDto} from "../model/MonetaryAccountDto.ts";
+import {MonetaryAccountDto} from "../../model-api-client/bunq/MonetaryAccountDto.ts";
 import React, {useContext} from "react";
 
 export interface MonetaryAccountContextProps {

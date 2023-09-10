@@ -12,6 +12,7 @@ import {DeviceServerResponse} from "./model/DeviceServerResponse";
 import {BunqApiResponse} from "./model/BunqApiResponse";
 import {Id, SessionResponse, Token, UserPerson} from "./model/SessionResponse";
 import {SessionContext} from "./SessionContext";
+import MonetaryAccountBank from "model-api-client/bunq/MonetaryAccountDto";
 
 const API_URL = "https://public-api.sandbox.bunq.com/v1"
 const TIME_TO_SESSION_EXPIRY_MINIMUM_SECONDS = 30
@@ -142,7 +143,7 @@ export class BunqApiContext {
             method: "POST", headers: {
                 "Content-Type": "application/json",
                 "Cache-Control": "no-cache",
-                "User-Agent": "MagicMirror",
+                "User-Agent": "BunqOverviewApp",
                 "X-Bunq-Language": "de_DE",
                 "X-Bunq-Region": "de_DE",
                 "X-Bunq-Request-Id": String(Math.random() * 9),
@@ -156,9 +157,9 @@ export class BunqApiContext {
         functions.logger.info("Register new device on BUNQ")
         const options = {
             method: "POST", headers: {
-                "User-Agent": "MagicMirror", "X-Bunq-Client-Authentication": this.bunqConfig.installationToken
+                "User-Agent": "BunqOverviewApp", "X-Bunq-Client-Authentication": this.bunqConfig.installationToken
             }, body: JSON.stringify({
-                description: "MagicMirror", secret: this.apiKey, "permitted_ips": ["*"]
+                description: "BunqOverviewApp", secret: this.apiKey, "permitted_ips": ["*"]
             })
         };
         await this.fetchData("/device-server", options, (data => this.bunqConfig = {...this.bunqConfig, deviceId: (data.Response[0] as DeviceServerResponse).Id.id}));
@@ -187,5 +188,21 @@ export class BunqApiContext {
                 expiryTime: sessionContext.expiryTime,
             }
         });
+    }
+
+    async account(iban: string): Promise<MonetaryAccountBank | undefined> {
+        const options = {
+            method: "GET", headers: {
+                "User-Agent": "BunqOverviewApp",
+                "X-Bunq-Client-Authentication": this.bunqSession.sessionToken
+            }
+        };
+
+        return await fetch(`${API_URL}/user/${this.bunqSession.userId}/monetary-account`, options)
+            .then(res => res.json())
+            .then((data: BunqApiResponse) => {
+                const accountList = data.Response.map(value => (value as any).MonetaryAccountBank as MonetaryAccountBank)
+                return accountList.find(account => account.alias.filter(alias => alias.type === "IBAN" || alias.value === iban).length > 0)
+            })
     }
 }
