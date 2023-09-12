@@ -17,7 +17,6 @@ import MonetaryAccountBank from "./model/MonetaryAccountDto";
 import {Payment} from "./model/Payment";
 
 export const MILLISECONDS_IN_SECOND = 1000
-const API_URL = "https://public-api.sandbox.bunq.com/v1"
 const TIME_TO_SESSION_EXPIRY_MINIMUM_SECONDS = 30
 
 const defaultBunqTokens: BunqTokens = {
@@ -43,18 +42,23 @@ const defaultHeader = {
 }
 
 export class BunqApiContext {
-    protected apiKey: string
+    protected _apiKey: string
+    protected apiUrl: string
     protected tokensRepository: BunqConfigRepository<BunqTokens>
     protected sessionRepository: BunqConfigRepository<BunqSession>
     protected bunqConfig: BunqTokens
     protected bunqSession: BunqSession
 
-    constructor(apiKey: string) {
-        this.apiKey = apiKey
+    constructor(apiUrl: string) {
+        this.apiUrl = apiUrl
         this.bunqConfig = defaultBunqTokens
         this.bunqSession = defaultBunqSession
         this.tokensRepository = new BunqConfigRepository("tokens", tokensConverter)
         this.sessionRepository = new BunqConfigRepository("session", sessionConverter)
+    }
+
+    set apiKey(apiKey: string) {
+        this._apiKey = apiKey
     }
 
     async create() {
@@ -123,7 +127,7 @@ export class BunqApiContext {
     }
 
     private async fetchData(path: string, options: RequestInit, callback: (data: BunqApiResponse) => void) {
-        await fetch(API_URL + path, options)
+        await fetch(this.apiUrl + path, options)
             .then(res => res.json())
             .then(data => {
                 functions.logger.info("Response from BUNQ api: " + JSON.stringify(data))
@@ -165,14 +169,14 @@ export class BunqApiContext {
                 ...defaultHeader,
                 "X-Bunq-Client-Authentication": this.bunqConfig.installationToken
             }, body: JSON.stringify({
-                description: "BunqOverviewApp", secret: this.apiKey, "permitted_ips": ["*"]
+                description: "BunqOverviewApp", secret: this._apiKey, "permitted_ips": ["*"]
             })
         };
         await this.fetchData("/device-server", options, (data => this.bunqConfig = {...this.bunqConfig, deviceId: (data.Response[0] as DeviceServerResponse).Id.id}));
     }
 
     private async session() {
-        const body = JSON.stringify({secret: this.apiKey});
+        const body = JSON.stringify({secret: this._apiKey});
         const sign = crypto.createSign("sha256");
         sign.update(body);
         const sig = sign.sign(this.bunqConfig.privateKey, "base64");
@@ -206,14 +210,21 @@ export class BunqApiContext {
             }
         };
 
-        return await fetch(`${API_URL}/user/${this.bunqSession.userId}/monetary-account`, options)
+        return await fetch(`${this.apiUrl}/user/${this.bunqSession.userId}/monetary-account`, options)
             .then(res => res.json())
             .then((data: BunqApiResponse) => {
                 if (data.Error !== undefined) throw data.Error
-                const accountList = data.Response.map(value => (value as any).MonetaryAccountBank as MonetaryAccountBank)
-                return {data: accountList.find(account => account.alias.filter(alias => alias.type === "IBAN" || alias.value === iban).length > 0)}
+                console.log("account response", data)
+                const accountList = data.Response.filter(value => value.hasOwnProperty("MonetaryAccountBank")).map((value: any) => value.MonetaryAccountBank as MonetaryAccountBank)
+                console.log("account list", accountList)
+                const account = accountList.filter(account => account.alias.filter(alias => alias.value === iban).length > 0)[0]
+                console.log("Found Account", account)
+                return {data: account}
             })
-            .catch((error: ErrorResponse) => ({error}))
+            .catch((error: ErrorResponse) => {
+                console.error(error)
+                return {error}
+            })
     }
 
     async payments(monetaryId: string): Promise<ApiResponse<Payment[]>> {
@@ -225,7 +236,7 @@ export class BunqApiContext {
             }
         };
 
-        return await fetch(`${API_URL}/user/${this.bunqSession.userId}/monetary-account/${monetaryId}/payment?count=${countLimit}`, options)
+        return await fetch(`${this.apiUrl}/user/${this.bunqSession.userId}/monetary-account/${monetaryId}/payment?count=${countLimit}`, options)
             .then(res => res.json())
             .then((data: BunqApiResponse) => {
                 if (data.Error !== undefined) throw data.Error

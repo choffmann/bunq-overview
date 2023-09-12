@@ -14,5 +14,7 @@ export const firebaseApp = initializeApp({
 export const auth = getAuth()
 export const functions = getFunctions(firebaseApp)
 
-connectAuthEmulator(auth, "http://192.168.178.72:9099")
-connectFunctionsEmulator(functions, "192.168.178.72", 5001)
+if (import.meta.env.DEV) {
+    connectAuthEmulator(auth, "http://192.168.178.54:9099")
+    connectFunctionsEmulator(functions, "192.168.178.54", 5001)
+}

@@ -8,7 +8,7 @@ export function useBunqAccount() {
     const [monetaryAccount, setMonetaryAccount] = useState<MonetaryAccountBank>()
     const [executeCallable, executing, error] = useHttpsCallable(
         getFunctions(firebaseApp),
-        `bunq/api/v1/account`
+        `bunqAccount`
     );
 
     useEffect(() => {

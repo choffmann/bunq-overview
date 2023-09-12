@@ -1,49 +1,47 @@
-import * as functions from 'firebase-functions'
-import * as admin from 'firebase-admin'
-import * as express from 'express'
-import * as cors from 'cors'
-import * as bodyParser from "body-parser";
+import {Response} from 'firebase-functions'
+import {initializeApp} from "firebase-admin/app";
+import {onRequest} from "firebase-functions/v2/https";
+import {defineSecret, defineString} from "firebase-functions/params";
 import {BunqApiContext} from "./BunqApiContext";
-import {validateFirebaseIdToken} from "./express/validateFirebaseIdToken";
-import {ensureTokensAndSessionExists} from "./express/ensureTokensAndSessionExists";
 import {ApiResponse} from "./model/ApiResponse";
 import {ErrorResponse} from "./model/BunqApiResponse";
 
-const develop = true
-const apiKey = "sandbox_39949d0c10c82768dc69a8831754fa1c9333bde07f336d17e9c31122"
-const iban = "NL47BUNQ2061979629"
+const apiKey = defineSecret("API_KEY")
+const apiUrl = process.env.API_URL
+const environment = defineString("ENVIRONMENT");
+const iban = defineString("IBAN")
+const develop = environment.equals("dev")
 
-admin.initializeApp(develop ? {databaseURL: "localhost:8080"} : functions.config().firestore)
+initializeApp(develop && {databaseURL: "localhost:8080"})
 
-export const app = express()
-export const apiContext = new BunqApiContext(apiKey)
-const main = express()
-main.use("/api/v1", app)
-main.use(bodyParser.json())
-main.use(bodyParser.urlencoded({extended: false}));
-develop ? app.use(cors({origin: "*"})) : app.use(cors({origin: true}))
-app.use(ensureTokensAndSessionExists)
-app.use(validateFirebaseIdToken)
+const apiContext = new BunqApiContext(apiUrl)
 
 const defaultErrorMessage: ErrorResponse = {
     error_description: "Something went wrong",
     error_description_translated: "Etwas ist schief gegangen"
 }
 
-function sendApiResponse<T>(res: express.Response, dto: ApiResponse<T>, messageIfDataUndefined?: string) {
-    if (dto.error !== undefined) res.status(500).json(dto)
-    if (dto.data !== undefined) res.status(200).json(dto)
-    if (dto.data === undefined && dto.error === undefined) res.status(400).send(messageIfDataUndefined || defaultErrorMessage)
+async function ensureTokensAndSessionExists() {
+    await apiContext.create()
+    await apiContext.ensureSessionActive()
 }
 
-app.post("/account", async (req, res) => {
-    const response = await apiContext.account(iban)
-    sendApiResponse(res, response, "No MonetaryAccount found")
+function sendApiResponse<T>(res: Response, dto: ApiResponse<T>, defaultMessage?: string) {
+    if (dto.error !== undefined) res.status(500).json(dto)
+    if (dto.data !== undefined) res.status(200).json(dto)
+    if (dto.data === undefined && dto.error === undefined) res.status(400).send(defaultMessage || defaultErrorMessage)
+}
+
+exports.bunqAccount = onRequest({cors: develop ? ["*"] : true, secrets: [apiKey]}, async (req, res) => {
+    apiContext.apiKey = apiKey.value()
+    await ensureTokensAndSessionExists()
+    apiContext.account(iban.value())
+        .then(response => sendApiResponse(res, response, "No MonetaryAccount found"))
 })
 
-app.post("/payments/:monetaryId", async (req: express.Request<{ monetaryId: string }>, res) => {
-    const response = await apiContext.payments(req.params.monetaryId)
-    sendApiResponse(res, response)
+exports.bunqPayments = onRequest({cors: develop ? ["*"] : true, secrets: [apiKey]}, async (req, res) => {
+    apiContext.apiKey = apiKey.value()
+    await ensureTokensAndSessionExists()
+    apiContext.payments(req.body.data["monetaryId"])
+        .then(response => sendApiResponse(res, response))
 })
-
-export const bunq = functions.https.onRequest(main);
