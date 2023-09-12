@@ -1,16 +1,24 @@
-import {useQuery} from "react-query";
-import {fetchBunqPayments} from "../api/BunqApi.ts";
+import {useEffect, useState} from "react";
+import {useHttpsCallable} from "react-firebase-hooks/functions";
+import {getFunctions} from "firebase/functions";
+import {firebaseApp} from "../firebase/firebaseSetup.ts";
+import {Payment} from "../model/Payment.ts";
 
-export function useBunqPayments() {
-    const toMin = (time: number) => time * 60 * 1000
-    const toSec = (time: number) => time * 1000
+export function useBunqPayments(accountId: number) {
+    const [payments, setPayments] = useState<Payment[]>([])
+    const [executeCallable, executing, error] = useHttpsCallable(
+        getFunctions(firebaseApp),
+        `bunq/api/v1/payments/${accountId}`
+    );
 
-    const {data, isLoading, isError} = useQuery({
-        queryKey: 'payments',
-        queryFn: fetchBunqPayments,
-        cacheTime: toMin(5),
-        refetchOnWindowFocus: false,
-        retryDelay: toSec(3)
-    })
-    return {data: data ?? [], isLoading, isError}
+    useEffect(() => {
+        const executeFunction = async () => {
+            const response = await executeCallable()
+            setPayments((response?.data as Payment[]))
+        }
+
+        executeFunction().catch(console.warn)
+    }, []);
+
+    return {payments, executing, error}
 }

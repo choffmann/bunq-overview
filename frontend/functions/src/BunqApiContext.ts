@@ -12,9 +12,9 @@ import {DeviceServerResponse} from "./model/DeviceServerResponse";
 import {BunqApiResponse, ErrorResponse} from "./model/BunqApiResponse";
 import {Id, SessionResponse, Token, UserPerson} from "./model/SessionResponse";
 import {SessionContext} from "./SessionContext";
-import MonetaryAccountBank from "model-api-client/bunq/MonetaryAccountDto";
-import {Payment}  from "model-api-client/bunq/Payment";
 import {ApiResponse} from "./model/ApiResponse";
+import MonetaryAccountBank from "./model/MonetaryAccountDto";
+import {Payment} from "./model/Payment";
 
 export const MILLISECONDS_IN_SECOND = 1000
 const API_URL = "https://public-api.sandbox.bunq.com/v1"

@@ -1,12 +1,14 @@
 import {List} from "@mui/material";
 import {useBunqPayments} from "../../hooks/useBunqPayments.ts";
 import PaymentListElement from "./PaymentListElement.tsx";
+import {useMonetaryAccountContext} from "../../context/MonetaryAccountContext.ts";
 
 const PaymentsList = () => {
-    const {data} = useBunqPayments()
+    const {data} = useMonetaryAccountContext()
+    const {payments} = useBunqPayments(data.id)
     return (
         <List>
-            {data.map(payment => {
+            {payments.map(payment => {
                 return <PaymentListElement payment={payment}/>
             })}
         </List>

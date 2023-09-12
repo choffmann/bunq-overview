@@ -2,10 +2,10 @@ import BalanceCard from "./BalanceCard.tsx";
 import {Box} from "@mui/material";
 import {useState} from "react";
 import MonetaryAccountInfoDialog from "./MonetaryAccountInfoDialog.tsx";
-import {MonetaryAccountDto} from "../../../model-api-client/bunq/MonetaryAccountDto.ts";
+import MonetaryAccountBank from "../../model/MonetaryAccountDto.ts";
 
 export interface BalanceViewProps {
-    monetaryAccount: MonetaryAccountDto
+    monetaryAccount: MonetaryAccountBank
 }
 
 const BalanceView = ({monetaryAccount}: BalanceViewProps) => {

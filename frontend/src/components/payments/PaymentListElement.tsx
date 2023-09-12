@@ -1,5 +1,5 @@
-import {Payment} from "../../../model-api-client/bunq/PaymentDto.ts";
 import {Avatar, ListItem, ListItemAvatar, ListItemText, Typography} from "@mui/material";
+import {Payment} from "../../model/Payment.ts";
 
 export interface PaymentListElementProps {
     payment: Payment
@@ -10,8 +10,7 @@ const PaymentListElement = ({payment}: PaymentListElementProps) => {
     const handleAvatar = () => {
         const image = payment.counterparty_alias.avatar?.image
         if (image != undefined) {
-            return <Avatar alt="counterparty avatar"
-                           src={`http://localhost:8080/api/attachment/${image[0].attachment_public_uuid}`}/>
+            return <Avatar src={`${image[0].urls[0].url}`}/>
         } else {
             return <Avatar/>
         }

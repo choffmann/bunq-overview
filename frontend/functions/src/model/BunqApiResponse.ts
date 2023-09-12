@@ -1,5 +1,3 @@
-import {Pagination} from "model-api-client/bunq/Pagination";
-
 export interface BunqApiResponse {
     Response: object[]
     Error?: ErrorResponse
@@ -9,4 +7,10 @@ export interface BunqApiResponse {
 export interface ErrorResponse {
     error_description: string,
     error_description_translated: string
+}
+
+export interface Pagination {
+    future_url: string
+    newer_url: any
+    older_url: any
 }
