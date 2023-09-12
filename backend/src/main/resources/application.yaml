@@ -1,9 +1,0 @@
-ktor:
-  application:
-    modules:
-      - com.jgdperl.ApplicationKt.module
-  development: true
-  deployment:
-    port: 8080
-    watch:
-      - classes
