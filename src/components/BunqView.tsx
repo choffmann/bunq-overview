@@ -2,9 +2,15 @@ import {useMonetaryAccountContext} from "../context/MonetaryAccountContext.ts";
 import {Box, CircularProgress, Container} from "@mui/material";
 import PaymentsList from "./payments/PaymentsList.tsx";
 import BalanceView from "./balance/BalanceView.tsx";
+import {useEffect, useState} from "react";
 
 const BunqView = () => {
     const {data, isFetching} = useMonetaryAccountContext()
+    const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+        setIsLoading(isFetching)
+    }, [isFetching])
 
     const loading = () => <Box sx={{
         display: "flex",
@@ -17,7 +23,7 @@ const BunqView = () => {
 
     return (
         <Container>
-            {isFetching ? loading() :
+            {isLoading ? loading() :
                 <Box>
                     <BalanceView monetaryAccount={data}/>
                     <PaymentsList/>

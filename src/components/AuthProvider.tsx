@@ -2,7 +2,7 @@ import React from "react";
 import LoginPage, {LoginFormData} from "../pages/LoginPage.tsx";
 import AuthContext from "../context/AuthContext.ts";
 import {auth} from "../firebase/firebaseSetup.ts";
-import {useAuthState, useSignInWithGoogle} from "react-firebase-hooks/auth";
+import {useAuthState, useSignInWithEmailAndPassword, useSignInWithGoogle} from "react-firebase-hooks/auth";
 
 export interface AuthProviderProps {
     children?: React.ReactElement
@@ -10,14 +10,16 @@ export interface AuthProviderProps {
 
 const AuthProvider = ({children}: AuthProviderProps) => {
     const [loggedInUser] = useAuthState(auth)
-    const [signInWithGoogle, _, loading, error] = useSignInWithGoogle(auth);
+    const [signInWithGoogle, _g, googleLoading, googleError] = useSignInWithGoogle(auth);
+    const [signInWithEmail, _e, emailLoading, emailError] = useSignInWithEmailAndPassword(auth)
 
     const onSubmit = (data: LoginFormData) => {
-        console.log("Submit", data)
+        signInWithEmail(data.username, data.password).catch(console.warn)
     }
     
     if (loggedInUser === undefined || loggedInUser === null) {
-        return <LoginPage onSubmit={onSubmit} google={{onClick: () => signInWithGoogle(), loading, error}}/>
+        return <LoginPage submit={{onClick: onSubmit, loading: emailLoading, error: emailError}}
+                          google={{onClick: () => signInWithGoogle(), loading: googleLoading, error: googleError}}/>
     }
 
     return (

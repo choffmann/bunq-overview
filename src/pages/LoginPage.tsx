@@ -4,7 +4,11 @@ import {AuthError} from "firebase/auth";
 import {useState} from "react";
 
 export interface LoginPageProps {
-    onSubmit: (loginData: LoginFormData) => void
+    submit: {
+        onClick: (loginData: LoginFormData) => void
+        loading: boolean
+        error?: AuthError
+    }
     google: {
         onClick: () => void
         loading: boolean
@@ -17,7 +21,7 @@ export interface LoginFormData {
     password: string
 }
 
-const LoginPage = ({onSubmit, google}: LoginPageProps) => {
+const LoginPage = ({submit, google}: LoginPageProps) => {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
 
@@ -45,7 +49,13 @@ const LoginPage = ({onSubmit, google}: LoginPageProps) => {
                                        onChange={(event) => setUsername(event.target.value)}/>
                             <TextField variant="outlined" label="Passwort" type="password" value={password}
                                        onChange={(event) => setPassword(event.target.value)}/>
-                            <Button onClick={() => onSubmit({username, password})} variant="contained">Anmelden</Button>
+                            <Button onClick={() => submit.onClick({username, password})}
+                                    variant="contained"
+                                    disabled={submit.loading}
+                                    startIcon={submit.loading && <CircularProgress size={20} color="inherit"/>}
+                            >
+                                Anmelden
+                            </Button>
                             <Button onClick={() => google.onClick()}
                                     variant="outlined"
                                     disabled={google.loading}
