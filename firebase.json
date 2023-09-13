@@ -26,22 +26,23 @@
   "emulators": {
     "auth": {
       "port": 9099,
-      "host": "0.0.0.0"
+      "host": "localhost"
     },
     "functions": {
       "port": 5001,
-      "host": "0.0.0.0"
+      "host": "localhost"
     },
     "hosting": {
-      "port": 5000,
-      "host": "0.0.0.0"
+      "port": 5050,
+      "host": "localhost"
     },
     "ui": {
       "enabled": false
     },
     "firestore": {
       "port": 8080,
-      "host": "0.0.0.0"
-    }
+      "host": "localhost"
+    },
+    "singleProjectMode": true
   }
 }

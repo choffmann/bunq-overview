@@ -2,10 +2,9 @@
   "name": "frontend",
   "private": true,
   "workspaces": [
-    "model-api-client",
     "functions"
   ],
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",

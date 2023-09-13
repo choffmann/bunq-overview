@@ -43,14 +43,13 @@ const defaultHeader = {
 
 export class BunqApiContext {
     protected _apiKey: string
-    protected apiUrl: string
+    protected _apiUrl: string
     protected tokensRepository: BunqConfigRepository<BunqTokens>
     protected sessionRepository: BunqConfigRepository<BunqSession>
     protected bunqConfig: BunqTokens
     protected bunqSession: BunqSession
 
-    constructor(apiUrl: string) {
-        this.apiUrl = apiUrl
+    constructor() {
         this.bunqConfig = defaultBunqTokens
         this.bunqSession = defaultBunqSession
         this.tokensRepository = new BunqConfigRepository("tokens", tokensConverter)
@@ -59,6 +58,10 @@ export class BunqApiContext {
 
     set apiKey(apiKey: string) {
         this._apiKey = apiKey
+    }
+
+    set apiUrl(apiUrl: string) {
+        this._apiUrl = apiUrl
     }
 
     async create() {
@@ -127,7 +130,7 @@ export class BunqApiContext {
     }
 
     private async fetchData(path: string, options: RequestInit, callback: (data: BunqApiResponse) => void) {
-        await fetch(this.apiUrl + path, options)
+        await fetch(this._apiUrl + path, options)
             .then(res => res.json())
             .then(data => {
                 functions.logger.info("Response from BUNQ api: " + JSON.stringify(data))
@@ -210,7 +213,7 @@ export class BunqApiContext {
             }
         };
 
-        return await fetch(`${this.apiUrl}/user/${this.bunqSession.userId}/monetary-account`, options)
+        return await fetch(`${this._apiUrl}/user/${this.bunqSession.userId}/monetary-account`, options)
             .then(res => res.json())
             .then((data: BunqApiResponse) => {
                 if (data.Error !== undefined) throw data.Error
@@ -236,7 +239,7 @@ export class BunqApiContext {
             }
         };
 
-        return await fetch(`${this.apiUrl}/user/${this.bunqSession.userId}/monetary-account/${monetaryId}/payment?count=${countLimit}`, options)
+        return await fetch(`${this._apiUrl}/user/${this.bunqSession.userId}/monetary-account/${monetaryId}/payment?count=${countLimit}`, options)
             .then(res => res.json())
             .then((data: BunqApiResponse) => {
                 if (data.Error !== undefined) throw data.Error

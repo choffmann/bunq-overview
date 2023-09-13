@@ -5,16 +5,17 @@ import {defineSecret, defineString} from "firebase-functions/params";
 import {BunqApiContext} from "./BunqApiContext";
 import {ApiResponse} from "./model/ApiResponse";
 import {ErrorResponse} from "./model/BunqApiResponse";
+import {SecretParam} from "firebase-functions/lib/params/types";
 
+const sandboxApiKey = "sandbox_39949d0c10c82768dc69a8831754fa1c9333bde07f336d17e9c31122"
 const apiKey = defineSecret("API_KEY")
-const apiUrl = process.env.API_URL
 const environment = defineString("ENVIRONMENT");
 const iban = defineString("IBAN")
-const develop = environment.equals("dev")
 
-initializeApp(develop && {databaseURL: "localhost:8080"})
 
-const apiContext = new BunqApiContext(apiUrl)
+initializeApp()
+
+const apiContext = new BunqApiContext()
 
 const defaultErrorMessage: ErrorResponse = {
     error_description: "Something went wrong",
@@ -26,6 +27,12 @@ async function ensureTokensAndSessionExists() {
     await apiContext.ensureSessionActive()
 }
 
+async function initOnRequest(apiKey: SecretParam) {
+    apiContext.apiKey = environment.equals("dev").thenElse(sandboxApiKey, apiKey.value()).value()
+    apiContext.apiUrl = environment.equals("dev").thenElse("https://public-api.sandbox.bunq.com/v1", "https://api.bunq.com/v1").value()
+    await ensureTokensAndSessionExists()
+}
+
 function sendApiResponse<T>(res: Response, dto: ApiResponse<T>, defaultMessage?: string) {
     if (dto.error !== undefined) res.status(500).json(dto)
     if (dto.data !== undefined) res.status(200).json(dto)
@@ -33,15 +40,13 @@ function sendApiResponse<T>(res: Response, dto: ApiResponse<T>, defaultMessage?:
 }
 
 exports.bunqAccount = onRequest({cors: true, secrets: [apiKey]}, async (req, res) => {
-    apiContext.apiKey = apiKey.value()
-    await ensureTokensAndSessionExists()
+    await initOnRequest(apiKey)
     apiContext.account(iban.value())
         .then(response => sendApiResponse(res, response, "No MonetaryAccount found"))
 })
 
 exports.bunqPayments = onRequest({cors: true, secrets: [apiKey]}, async (req, res) => {
-    apiContext.apiKey = apiKey.value()
-    await ensureTokensAndSessionExists()
+    await initOnRequest(apiKey)
     apiContext.payments(req.body.data["monetaryId"])
         .then(response => sendApiResponse(res, response))
 })
