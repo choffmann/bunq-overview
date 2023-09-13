@@ -1,24 +1,29 @@
 import {useMonetaryAccountContext} from "../context/MonetaryAccountContext.ts";
-import {CircularProgress, Container, LinearProgress} from "@mui/material";
+import {Box, CircularProgress, Container} from "@mui/material";
 import PaymentsList from "./payments/PaymentsList.tsx";
 import BalanceView from "./balance/BalanceView.tsx";
-import ErrorBoundary from "./error/ErrorBoundary.tsx";
 
 const BunqView = () => {
     const {data, isFetching} = useMonetaryAccountContext()
+
+    const loading = () => <Box sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh"
+    }}>
+        <CircularProgress/>
+    </Box>
+
     return (
-        <>
-            {isFetching ? <LinearProgress/> :
-                <Container>
-                    <ErrorBoundary>
-                        {isFetching ? <CircularProgress/> : <>
-                            <BalanceView monetaryAccount={data}/>
-                            <PaymentsList/>
-                        </>}
-                    </ErrorBoundary>
-                </Container>
+        <Container>
+            {isFetching ? loading() :
+                <Box>
+                    <BalanceView monetaryAccount={data}/>
+                    <PaymentsList/>
+                </Box>
             }
-        </>
+        </Container>
     )
 }
 

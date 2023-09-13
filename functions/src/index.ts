@@ -32,14 +32,14 @@ function sendApiResponse<T>(res: Response, dto: ApiResponse<T>, defaultMessage?:
     if (dto.data === undefined && dto.error === undefined) res.status(400).send(defaultMessage || defaultErrorMessage)
 }
 
-exports.bunqAccount = onRequest({cors: develop ? ["*"] : true, secrets: [apiKey]}, async (req, res) => {
+exports.bunqAccount = onRequest({cors: true, secrets: [apiKey]}, async (req, res) => {
     apiContext.apiKey = apiKey.value()
     await ensureTokensAndSessionExists()
     apiContext.account(iban.value())
         .then(response => sendApiResponse(res, response, "No MonetaryAccount found"))
 })
 
-exports.bunqPayments = onRequest({cors: develop ? ["*"] : true, secrets: [apiKey]}, async (req, res) => {
+exports.bunqPayments = onRequest({cors: true, secrets: [apiKey]}, async (req, res) => {
     apiContext.apiKey = apiKey.value()
     await ensureTokensAndSessionExists()
     apiContext.payments(req.body.data["monetaryId"])
