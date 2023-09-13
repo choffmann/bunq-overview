@@ -23,7 +23,8 @@ const BalanceView = ({monetaryAccount}: BalanceViewProps) => {
     return (
         <Box sx={{
             display: "flex",
-            justifyContent: "center"
+            justifyContent: "center",
+            mt: 2
         }}>
             <BalanceCard balance={balance.value} onInfoClick={onInfoButtonClicked}/>
 

@@ -20,20 +20,16 @@ const PaymentsList = () => {
             <Typography color="text.secondary">Es sind keine Einträge verfügbar</Typography>
         </ListItem>
 
-    const loading = () => {
-        return <List>
-            {Array.from(Array(15)).map((i) =>
-                <ListItem key={i}>
-                    <ListItemAvatar>
-                        <Skeleton variant="circular">
-                            <Avatar/>
-                        </Skeleton>
-                    </ListItemAvatar>
-                    <ListItemText primary={<Skeleton/>} secondary={<Skeleton width="60%"/>}/>
-                </ListItem>
-            )}
-        </List>
-    }
+    const loading = () => Array.from(Array(15)).map((i) =>
+        <ListItem key={i}>
+            <ListItemAvatar>
+                <Skeleton variant="circular">
+                    <Avatar/>
+                </Skeleton>
+            </ListItemAvatar>
+            <ListItemText primary={<Skeleton/>} secondary={<Skeleton width="60%"/>}/>
+        </ListItem>
+    )
 
     return (
         <List>

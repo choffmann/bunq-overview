@@ -3,6 +3,7 @@ import {Box, CircularProgress, Container} from "@mui/material";
 import PaymentsList from "./payments/PaymentsList.tsx";
 import BalanceView from "./balance/BalanceView.tsx";
 import {useEffect, useState} from "react";
+import AppDrawer from "./appbar/AppDrawer.tsx";
 
 const BunqView = () => {
     const {data, isFetching} = useMonetaryAccountContext()
@@ -22,14 +23,16 @@ const BunqView = () => {
     </Box>
 
     return (
-        <Container>
-            {isLoading ? loading() :
-                <Box>
-                    <BalanceView monetaryAccount={data}/>
-                    <PaymentsList/>
-                </Box>
-            }
-        </Container>
+        <AppDrawer>
+            <Container>
+                {isLoading ? loading() :
+                    <>
+                        <BalanceView monetaryAccount={data}/>
+                        <PaymentsList/>
+                    </>
+                }
+            </Container>
+        </AppDrawer>
     )
 }
 

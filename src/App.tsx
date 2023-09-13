@@ -1,14 +1,18 @@
 import MonetaryAccountContainer from "./components/MonetaryAccountContainer.tsx";
 import BunqView from "./components/BunqView.tsx";
 import AuthProvider from "./components/AuthProvider.tsx";
+import {CssBaseline} from "@mui/material";
 
 function App() {
     return (
-        <AuthProvider>
-            <MonetaryAccountContainer>
-                <BunqView/>
-            </MonetaryAccountContainer>
-        </AuthProvider>
+        <>
+            <CssBaseline/>
+            <AuthProvider>
+                <MonetaryAccountContainer>
+                    <BunqView/>
+                </MonetaryAccountContainer>
+            </AuthProvider>
+        </>
     )
 }
 
