@@ -25,9 +25,7 @@ const PaymentListElement = ({payment}: PaymentListElementProps) => {
             <ListItemAvatar>
                 {handleAvatar()}
             </ListItemAvatar>
-            <ListItemText primary={
-                <Typography noWrap>{payment.counterparty_alias.display_name}</Typography>
-            }/>
+            <ListItemText primaryTypographyProps={{style: {whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}, pr: 4}} primary={payment.counterparty_alias.display_name}/>
         </ListItem>
     )
 }
