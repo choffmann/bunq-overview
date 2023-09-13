@@ -1,7 +1,7 @@
 import {getFunctions} from 'firebase/functions';
 import {useHttpsCallable} from 'react-firebase-hooks/functions';
 import {firebaseApp} from "../firebase/firebaseSetup.ts";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import MonetaryAccountBank from "../model/MonetaryAccountDto.ts";
 
 export function useBunqAccount() {
@@ -11,12 +11,12 @@ export function useBunqAccount() {
         `bunqAccount`
     );
 
-    useEffect(() => {
-        const executeFunction = async () => {
-            const response = await executeCallable()
-            setMonetaryAccount((response?.data as MonetaryAccountBank))
-        }
+    const executeFunction = useCallback(async () => {
+        const response = await executeCallable()
+        setMonetaryAccount((response?.data as MonetaryAccountBank))
+    }, [])
 
+    useEffect(() => {
         executeFunction().catch(console.warn)
     }, []);
 
