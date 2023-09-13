@@ -9,19 +9,25 @@ import React, {useState} from "react";
 import {Logout, Monitor} from "@mui/icons-material";
 import {useSignOut} from "react-firebase-hooks/auth";
 import {auth} from "../../firebase/firebaseSetup.ts";
+import {useNotify} from "../../context/NotificationContext.tsx";
 
 export interface AppDrawerProps {
     children?: React.ReactElement
 }
 
 const AppDrawer = ({children}: AppDrawerProps) => {
-    const [signOut, loading, error] = useSignOut(auth);
+    const notify = useNotify()
+    const [signOut, _, error] = useSignOut(auth);
     const [openDrawer, setOpenDrawer] = useState(false)
     const iOS = typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent);
 
     const handleLogOut = async () => {
         const success = await signOut()
-        if (success) alert('You are sign out');
+        if (success) notify('Du wurdest erfolgreich abgemeldet');
+        if (error) {
+            notify("Es ist ein Fehler beim abmelden aufgetreten")
+            console.error(error)
+        }
     }
 
     return (
