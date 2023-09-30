@@ -1,7 +1,6 @@
 import {useBunqAccount} from "../hooks/useBunqAccount.ts";
 import MonetaryAccountContext, {MonetaryAccountContextProps} from "../context/MonetaryAccountContext.ts";
 import {ReactNode} from "react";
-import {CircularProgress} from "@mui/material";
 
 export interface MonetaryAccountContainerProps {
     children?: ReactNode
@@ -20,7 +19,7 @@ const MonetaryAccountContainer = ({children}: MonetaryAccountContainerProps) => 
 
     return (
         <>
-            {monetaryAccount === undefined ? <CircularProgress/> : createProvider({data: monetaryAccount, isError: error !== undefined, isFetching: executing})}
+            {monetaryAccount && createProvider({data: monetaryAccount, isError: error !== undefined, isFetching: executing})}
         </>
     )
 

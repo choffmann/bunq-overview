@@ -1,0 +1,92 @@
+import React, {useCallback, useContext, useState} from "react";
+
+export interface AppBarContextProps {
+    title: string
+    setTitle: (title: string) => void
+    navBar: {
+        isOpen: boolean
+        open: () => void
+        close: () => void
+    }
+    search: {
+        visible: boolean,
+        show: () => void,
+        hidde: () => void
+    }
+    loading: {
+        isLoading: boolean
+        setLoading: (loading: boolean) => void
+    }
+}
+
+const AppBarContext = React.createContext<AppBarContextProps | null>(null)
+
+export function useAppBar() {
+    const context = useContext(AppBarContext)
+    if (context === null) {
+        throw Error("Did you create AppBarContext.Provider?")
+    }
+    return context
+}
+
+export interface AppBarContextProviderProps extends React.PropsWithChildren {
+
+}
+
+const AppBarContextProvider = ({children}: AppBarContextProviderProps) => {
+    const [openNavBar, setOpenNavBar] = useState(false)
+    const [showSearchIcon, setShowSearchIcon] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
+    const [title, setTitle] = useState("")
+
+    const handleOpenNavBar = useCallback(() => {
+        setOpenNavBar(true)
+    }, [])
+
+    const handleCloseNavBar = useCallback(() => {
+        setOpenNavBar(false)
+    }, [])
+
+    const handleShowSearchIcon = useCallback(() => {
+        setShowSearchIcon(true)
+    }, [])
+
+    const handleHiddeSearchIcon = useCallback(() => {
+        setShowSearchIcon(false)
+    }, [])
+
+    const handleSetLoading = useCallback((loading: boolean) => {
+        setIsLoading(loading)
+    }, [])
+
+    const handleSetTitle = useCallback((title: string) => {
+        setTitle(title)
+    }, [])
+
+    const context: AppBarContextProps = {
+        title,
+        setTitle: handleSetTitle,
+        navBar: {
+            isOpen: openNavBar,
+            open: handleOpenNavBar,
+            close: handleCloseNavBar
+        },
+        search: {
+            visible: showSearchIcon,
+            show: handleShowSearchIcon,
+            hidde: handleHiddeSearchIcon
+        },
+        loading: {
+            isLoading,
+            setLoading: handleSetLoading
+        }
+    }
+
+    return (
+        <AppBarContext.Provider value={context}>
+            {children}
+        </AppBarContext.Provider>
+    )
+}
+
+export default AppBarContextProvider

@@ -34,7 +34,9 @@ const NotificationContextProvider = ({children}: NotificationContextProviderProp
 
     return (
         <NotificationContext.Provider value={context}>
-            <Snackbar open={open} onClose={() => onClose()} message={message} anchorOrigin={{horizontal: "center", vertical: "bottom"}} TransitionComponent={Slide}/>
+            <Snackbar open={open} onClose={() => onClose()} message={message}
+                      anchorOrigin={{horizontal: "center", vertical: "bottom"}} TransitionComponent={Slide}
+                      autoHideDuration={6000}/>
             {children}
         </NotificationContext.Provider>
 

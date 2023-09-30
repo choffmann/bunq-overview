@@ -41,7 +41,7 @@ const LoginPage = ({submit, google}: LoginPageProps) => {
                         justifyContent: "center",
                         alignItems: "center",
                     }}>
-                        <img src="/assets/icons/logo_square-512.png" alt="BUNQ Logo" height="96" width="96"
+                        <img src="/assets/icons/logo_square-96.png" alt="BUNQ Logo" height="96" width="96"
                              style={{paddingBottom: 16}}/>
                         <Stack spacing={2}>
                             <Typography variant="h4" textAlign="center">Wie gehts BUNQ?</Typography>
