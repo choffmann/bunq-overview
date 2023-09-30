@@ -4,6 +4,7 @@ import PaymentsList from "./payments/PaymentsList.tsx";
 import BalanceView from "./balance/BalanceView.tsx";
 import {useEffect, useState} from "react";
 import AppDrawer from "./appbar/AppDrawer.tsx";
+import TopAppBar from "./appbar/TopAppBar.tsx";
 
 const BunqView = () => {
     const {data, isFetching} = useMonetaryAccountContext()
@@ -23,16 +24,19 @@ const BunqView = () => {
     </Box>
 
     return (
-        <AppDrawer>
-            <Container>
-                {isLoading ? loading() :
-                    <>
-                        <BalanceView monetaryAccount={data}/>
-                        <PaymentsList/>
-                    </>
-                }
-            </Container>
-        </AppDrawer>
+        <>
+            <TopAppBar/>
+            <AppDrawer>
+                <Container>
+                    {isLoading ? loading() :
+                        <>
+                            <BalanceView monetaryAccount={data}/>
+                            <PaymentsList/>
+                        </>
+                    }
+                </Container>
+            </AppDrawer>
+        </>
     )
 }
 
