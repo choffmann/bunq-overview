@@ -2,19 +2,20 @@ import {
     Avatar,
     Collapse,
     Divider,
-    List, ListItemAvatar,
+    List, ListItem, ListItemAvatar,
     ListItemButton,
     ListItemIcon,
     ListItemText,
-    SwipeableDrawer
+    SwipeableDrawer, Switch
 } from "@mui/material";
 import React, {useState} from "react";
-import {BugReport, ExpandLess, ExpandMore, Logout, Message, Monitor, Settings} from "@mui/icons-material";
+import {BugReport, DarkMode, ExpandLess, ExpandMore, Logout, Message, Settings} from "@mui/icons-material";
 import {useSignOut} from "react-firebase-hooks/auth";
 import {auth} from "../../firebase/firebaseSetup.ts";
 import {useNotify} from "../../context/NotificationContext.tsx";
 import {useAppBar} from "../../context/AppBarContext.tsx";
 import {useAuthContext} from "../../context/AuthContext.ts";
+import {useColorModeContext} from "../../context/ColorModeContext.tsx";
 
 export interface AppDrawerProps {
     children?: React.ReactElement
@@ -24,12 +25,12 @@ const AppDrawer = ({children}: AppDrawerProps) => {
     const notify = useNotify()
     const appBar = useAppBar()
     const user = useAuthContext()
+    const {colorMode, toggleColorMode} = useColorModeContext()
     const [signOut, _, error] = useSignOut(auth);
     const iOS = typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent);
     const [openDebugList, setOpenDebugList] = useState(false)
 
     const debugList = <>
-        <Divider/>
         <ListItemButton onClick={() => handleDebugList()}>
             <ListItemIcon><BugReport/></ListItemIcon>
             <ListItemText>Debug List</ListItemText>
@@ -37,6 +38,11 @@ const AppDrawer = ({children}: AppDrawerProps) => {
         </ListItemButton>
         <Collapse in={openDebugList}>
             <List>
+                <ListItem sx={{ pl: 4 }}>
+                    <ListItemIcon><DarkMode/></ListItemIcon>
+                    <ListItemText>Dark Mode</ListItemText>
+                    <Switch value={colorMode === "dark"} onChange={() => handleSwitchColorMode()}/>
+                </ListItem>
                 <ListItemButton onClick={() => handleTriggerSnackBar()} sx={{ pl: 4 }}>
                     <ListItemIcon><Message/></ListItemIcon>
                     <ListItemText>Trigger Snackbar</ListItemText>
@@ -63,6 +69,10 @@ const AppDrawer = ({children}: AppDrawerProps) => {
         notify(messages[(Math.floor(Math.random() * messages.length))])
     }
 
+    const handleSwitchColorMode = () => {
+        toggleColorMode()
+    }
+
     return (
         <>
             <SwipeableDrawer anchor="left" open={appBar.navBar.isOpen} onClose={() => appBar.navBar.close()}
@@ -77,10 +87,6 @@ const AppDrawer = ({children}: AppDrawerProps) => {
                     <ListItemButton>
                         <ListItemIcon><Settings/></ListItemIcon>
                         <ListItemText>Einstellungen</ListItemText>
-                    </ListItemButton>
-                    <ListItemButton>
-                        <ListItemIcon><Monitor/></ListItemIcon>
-                        <ListItemText>Systeminformationen</ListItemText>
                     </ListItemButton>
                     <ListItemButton onClick={() => handleLogOut()}>
                         <ListItemIcon><Logout/></ListItemIcon>
