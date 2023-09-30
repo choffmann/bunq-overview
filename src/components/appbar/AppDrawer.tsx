@@ -9,13 +9,24 @@ import {
     SwipeableDrawer, Switch
 } from "@mui/material";
 import React, {useState} from "react";
-import {BugReport, DarkMode, ExpandLess, ExpandMore, Logout, Message, Settings} from "@mui/icons-material";
+import {
+    BugReport,
+    Cached,
+    DarkMode,
+    ExpandLess,
+    ExpandMore,
+    FormatListBulleted,
+    Logout,
+    Message, Replay,
+    Settings
+} from "@mui/icons-material";
 import {useSignOut} from "react-firebase-hooks/auth";
 import {auth} from "../../firebase/firebaseSetup.ts";
 import {useNotify} from "../../context/NotificationContext.tsx";
 import {useAppBar} from "../../context/AppBarContext.tsx";
 import {useAuthContext} from "../../context/AuthContext.ts";
 import {useColorModeContext} from "../../context/ColorModeContext.tsx";
+import {Link} from "react-router-dom";
 
 export interface AppDrawerProps {
     children?: React.ReactElement
@@ -43,13 +54,26 @@ const AppDrawer = ({children}: AppDrawerProps) => {
                     <ListItemText>Dark Mode</ListItemText>
                     <Switch value={colorMode === "dark"} onChange={() => handleSwitchColorMode()}/>
                 </ListItem>
+                <ListItem sx={{ pl: 4 }}>
+                    <ListItemIcon><Cached/></ListItemIcon>
+                    <ListItemText>Loading</ListItemText>
+                    <Switch value={appBar.loading.isLoading} onChange={(_, checked) => appBar.loading.setLoading(checked)}/>
+                </ListItem>
                 <ListItemButton onClick={() => handleTriggerSnackBar()} sx={{ pl: 4 }}>
                     <ListItemIcon><Message/></ListItemIcon>
                     <ListItemText>Trigger Snackbar</ListItemText>
                 </ListItemButton>
+                <ListItemButton onClick={() => window.location.reload()} sx={{ pl: 4 }}>
+                    <ListItemIcon><Replay/></ListItemIcon>
+                    <ListItemText>Reload Page</ListItemText>
+                </ListItemButton>
             </List>
         </Collapse>
     </>
+
+    const handleSettings = () => {
+        appBar.navBar.close()
+    }
 
     const handleLogOut = async () => {
         const success = await signOut()
@@ -84,7 +108,11 @@ const AppDrawer = ({children}: AppDrawerProps) => {
                         <ListItemText primary={user.displayName} secondary={user.email}/>
                     </ListItemButton>
                     <Divider/>
-                    <ListItemButton>
+                    <ListItemButton component={Link} to="/" onClick={() => handleSettings()}>
+                        <ListItemIcon><FormatListBulleted/></ListItemIcon>
+                        <ListItemText>Übersicht</ListItemText>
+                    </ListItemButton>
+                    <ListItemButton component={Link} to="/settings" onClick={() => handleSettings()}>
                         <ListItemIcon><Settings/></ListItemIcon>
                         <ListItemText>Einstellungen</ListItemText>
                     </ListItemButton>

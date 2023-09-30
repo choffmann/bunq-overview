@@ -10,17 +10,24 @@ import {
 import {useBunqPayments} from "../../hooks/useBunqPayments.ts";
 import PaymentListElement from "./PaymentListElement.tsx";
 import {useMonetaryAccountContext} from "../../context/MonetaryAccountContext.ts";
+import {useAppBar} from "../../context/AppBarContext.tsx";
+import {useEffect} from "react";
 
 const PaymentsList = () => {
+    const appBar = useAppBar()
     const {data} = useMonetaryAccountContext()
     const {payments, executing} = useBunqPayments(data.id)
+
+    useEffect(() => {
+        appBar.loading.setLoading(executing)
+    }, [executing]);
 
     const emptyList =
         <ListItem>
             <Typography color="text.secondary">Es sind keine Einträge verfügbar</Typography>
         </ListItem>
 
-    const loading = () => Array.from(Array(15)).map((i) =>
+    const loading = () => Array.from(Array(30)).map((i) =>
         <ListItem key={i}>
             <ListItemAvatar>
                 <Skeleton variant="circular">
