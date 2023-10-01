@@ -5,11 +5,10 @@ import MonetaryAccountInfoDialog from "./MonetaryAccountInfoDialog.tsx";
 import MonetaryAccountBank from "../../model/MonetaryAccountDto.ts";
 
 export interface BalanceViewProps {
-    monetaryAccount: MonetaryAccountBank
+    monetaryAccount?: MonetaryAccountBank
 }
 
 const BalanceView = ({monetaryAccount}: BalanceViewProps) => {
-    const {balance} = monetaryAccount
     const [showDialog, setShowDialog] = useState(false)
 
     const onInfoButtonClicked = () => {
@@ -26,9 +25,9 @@ const BalanceView = ({monetaryAccount}: BalanceViewProps) => {
             justifyContent: "center",
             mt: 2
         }}>
-            <BalanceCard balance={balance.value} onInfoClick={onInfoButtonClicked}/>
+            <BalanceCard balance={monetaryAccount?.balance.value} onInfoClick={onInfoButtonClicked}/>
 
-            <MonetaryAccountInfoDialog visible={showDialog} iban={monetaryAccount.alias.find(value => value.type === "IBAN")?.value || "Keine IBAN vorhanden"}
+            <MonetaryAccountInfoDialog visible={showDialog} iban={monetaryAccount?.alias.find(value => value.type === "IBAN")?.value || "Keine IBAN vorhanden"}
                                        onClose={handleCloseInfoDialog}/>
         </Box>
     )
