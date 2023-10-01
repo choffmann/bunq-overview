@@ -1,8 +1,18 @@
 import React, {useCallback, useContext, useState} from "react";
+import {useNavigate} from "react-router-dom";
+
+
+export type NavIcon = "menu" | "navigation"
 
 export interface AppBarContextProps {
     title: string
     setTitle: (title: string) => void
+    navIcon: {
+        variant: NavIcon
+        setVariant: (variant: NavIcon) => void
+        to: (to: string) => void
+        onClick: () => void
+    }
     navBar: {
         isOpen: boolean
         open: () => void
@@ -34,10 +44,13 @@ export interface AppBarContextProviderProps extends React.PropsWithChildren {
 }
 
 const AppBarContextProvider = ({children}: AppBarContextProviderProps) => {
+    const navigate = useNavigate()
     const [openNavBar, setOpenNavBar] = useState(false)
     const [showSearchIcon, setShowSearchIcon] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [title, setTitle] = useState("")
+    const [navVariant, setNavVariant] = useState<NavIcon>("menu")
+    const [navTo, setNavTo] = useState("")
 
     const handleOpenNavBar = useCallback(() => {
         setOpenNavBar(true)
@@ -63,9 +76,32 @@ const AppBarContextProvider = ({children}: AppBarContextProviderProps) => {
         setTitle(title)
     }, [])
 
+    const handleSetNavVariant = useCallback((variant: NavIcon) => {
+        setNavVariant(variant)
+    }, [])
+
+    const handleSetNavTo = (to: string) => {
+        setNavTo(to)
+    }
+
+    const handleNavIconClick = () => {
+        switch (navVariant) {
+            case "menu":
+                return handleOpenNavBar()
+            case "navigation":
+                return navigate(navTo)
+        }
+    }
+
     const context: AppBarContextProps = {
         title,
         setTitle: handleSetTitle,
+        navIcon: {
+            variant: navVariant,
+            setVariant: handleSetNavVariant,
+            to: handleSetNavTo,
+            onClick: handleNavIconClick
+        },
         navBar: {
             isOpen: openNavBar,
             open: handleOpenNavBar,
