@@ -84,7 +84,7 @@ const pwaManifest: Partial<VitePWAOptions> = {
 }
 
 export default ({mode}: ConfigEnv) => {
-    if (mode === "dev") {
+    if (mode !== "release") {
         const appName = "Wie gehts BUNQ?"
         const gitLatestTag = execSync("git describe --tags --abbrev=0").toString().trimEnd()
         const gitCurrentBranch = execSync("git rev-parse --abbrev-ref HEAD").toString().trimEnd()

@@ -11,6 +11,10 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      - name: Commit hash
+        id: commit
+        uses: prompt/actions-commit-hash@v3
+
       - name: Extract branch name
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
@@ -24,11 +28,11 @@ jobs:
         id: date
         run: echo "::set-output name=date::$(date +'%d.%m.%y - %H:%M')"
 
-      - run: yarn install && yarn build
+      - run: yarn install && yarn build:release
         env:
           VITE_APP_VERSION: ${{ steps.ghd.outputs.tag }}
           VITE_CURRENT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
-          VITE_LAST_COMMIT: ${{ steps.ghd.outputs.sha }}
+          VITE_LAST_COMMIT: ${{ steps.commit.outputs.short }}
           VITE_APP_BUILD_DATETIME: ${{ steps.date.outputs.date }}
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
