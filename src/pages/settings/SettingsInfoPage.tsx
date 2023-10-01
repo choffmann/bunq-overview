@@ -22,7 +22,7 @@ const SettingsInfoPage = ({}: SettingsInfoPageProps) => {
                 </ListItem>
                 <ListItem>
                     <ListItemText>App Icon</ListItemText>
-                    <img src="/assets/icons/logo_square-96.png" height={24} width={24} alt="app logo"/>
+                    <img src="/assets/icons/logo-96.png" height={24} width={24} alt="app logo"/>
                 </ListItem>
             </List>
             <List subheader={<ListSubheader>Build Info</ListSubheader>}>
