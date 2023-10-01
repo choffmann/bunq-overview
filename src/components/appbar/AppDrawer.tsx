@@ -52,7 +52,7 @@ const AppDrawer = ({children}: AppDrawerProps) => {
                 <ListItem sx={{pl: 4}}>
                     <ListItemIcon><DarkMode/></ListItemIcon>
                     <ListItemText>Dark Mode</ListItemText>
-                    <Switch value={colorMode === "dark"} onChange={() => handleSwitchColorMode()}/>
+                    <Switch checked={colorMode === "dark"} onChange={() => handleSwitchColorMode()}/>
                 </ListItem>
                 <ListItem sx={{pl: 4}}>
                     <ListItemIcon><Cached/></ListItemIcon>

@@ -21,6 +21,7 @@ import {
 } from "@mui/icons-material";
 import {useAuthContext} from "../context/AuthContext.ts";
 import {Link} from "react-router-dom";
+import {useColorModeContext} from "../context/ColorModeContext.tsx";
 
 interface SettingsPageProps {
 
@@ -28,25 +29,27 @@ interface SettingsPageProps {
 
 const SettingsPage = ({}: SettingsPageProps) => {
     const appBar = useAppBar()
+    const {colorMode, toggleColorMode} = useColorModeContext()
     const user = useAuthContext()
     const isAdmin = import.meta.env.DEV || user.uid === "8dUHVOe2i4gWaLz0tUXlzS7wsxx2"
 
     useEffect(() => {
         appBar.setTitle("Einstellungen")
+        console.log(colorMode)
     }, []);
 
     return (
         <>
             <Stack justifyContent="center" alignItems="center" sx={{my: 2}}>
                 <Avatar sx={{width: 96, height: 96}} src={user.photoURL ?? undefined}/>
-                <Typography variant="h5">{user.displayName}</Typography>
+                <Typography variant="h5" sx={{pt: 1}}>{user.displayName}</Typography>
                 <Typography variant="subtitle1">{user.email}</Typography>
             </Stack>
             <List>
                 <ListItem>
                     <ListItemIcon><DarkMode/></ListItemIcon>
                     <ListItemText primary="Dark Mode"/>
-                    <Switch/>
+                    <Switch checked={colorMode === "dark"} onChange={() => toggleColorMode()}/>
                 </ListItem>
                 <ListItemButton component={Link} to="/settings/overview">
                     <ListItemIcon><Build/></ListItemIcon>

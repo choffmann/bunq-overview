@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useEffect, useMemo, useState} from "react";
+import React, {useCallback, useContext, useMemo, useState} from "react";
 import {createTheme, ThemeProvider, useMediaQuery} from "@mui/material";
 
 export type ColorMode = "light" | "dark"
@@ -12,17 +12,18 @@ const ColorModeContext = React.createContext<ColorModeContextProps | null>(null)
 
 const ColorModeContextProvider = ({children}: React.PropsWithChildren) => {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
-    const [mode, setMode] = useState<ColorMode>(prefersDarkMode ? "dark" : "light")
+    const initColorMode = useCallback(() => {
+        const localStorageColorMode = localStorage.getItem("colorMode")
+        if (localStorageColorMode === null) return prefersDarkMode ? "dark" : "light"
+        else return localStorageColorMode === "dark" ? "dark" : "light"
+    }, [])
+    const [mode, setMode] = useState<ColorMode>(initColorMode())
     const theme = useMemo(() => {
-        localStorage.setItem('colorMode', mode)
         return createTheme({palette: {mode}})
     }, [mode])
 
-    useEffect(() => {
-        setMode(prefersDarkMode ? "dark" : "light")
-    }, [prefersDarkMode])
-
     const toggleColorMode = useCallback(() => {
+        localStorage.setItem('colorMode', mode === "light" ? "dark" : "light")
         setMode(prevMode => prevMode === "light" ? "dark" : "light")
     }, [])
 
