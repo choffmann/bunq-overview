@@ -35,6 +35,10 @@ const SettingsInfoPage = ({}: SettingsInfoPageProps) => {
                     <Typography>{import.meta.env.VITE_LAST_COMMIT}</Typography>
                 </ListItem>
                 <ListItem>
+                    <ListItemText>Branch Name</ListItemText>
+                    <Typography>{import.meta.env.VITE_CURRENT_BRANCH}</Typography>
+                </ListItem>
+                <ListItem>
                     <ListItemText>Build Datum</ListItemText>
                     <Typography>{import.meta.env.VITE_APP_BUILDDATETime}</Typography>
                 </ListItem>
