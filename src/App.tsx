@@ -15,6 +15,7 @@ import SettingsOverviewPage from "./pages/settings/SettingsOverviewPage.tsx";
 import SettingsProfilePage from "./pages/settings/SettingsProfilePage.tsx";
 import SettingsPageLayout from "./pages/settings/SettingsPageLayout.tsx";
 import SettingsAdminCenterPage from "./pages/settings/SettingsAdminCenterPage.tsx";
+import {IntlProvider} from "react-intl";
 
 function App() {
     const client = new QueryClient()
@@ -22,34 +23,35 @@ function App() {
         <>
             <ColorModeContextProvider>
                 <CssBaseline/>
-                <NotificationContextProvider>
-                    <QueryClientProvider client={client}>
-                        <AuthProvider>
-                            <BrowserRouter>
-
-                                <AppBarContextProvider>
-                                    <Routes>
-                                        <Route path="/" element={<Layout/>}>
-                                            <Route index element={
-                                                <MonetaryAccountContainer>
-                                                    <BunqView/>
-                                                </MonetaryAccountContainer>
-                                            }/>
-                                            <Route path="settings" element={<SettingsPage/>}/>
-                                        </Route>
-                                        <Route path="/settings" element={<SettingsPageLayout/>}>
-                                            <Route path="info" element={<SettingsInfoPage/>}/>
-                                            <Route path="admin-center" element={<SettingsAdminCenterPage/>}/>
-                                            <Route path="overview" element={<SettingsOverviewPage/>}/>
-                                            <Route path="profile" element={<SettingsProfilePage/>}/>
-                                        </Route>
-                                    </Routes>
-                                    {import.meta.env.DEV && <ReactQueryDevtools/>}
-                                </AppBarContextProvider>
-                            </BrowserRouter>
-                        </AuthProvider>
-                    </QueryClientProvider>
-                </NotificationContextProvider>
+                <IntlProvider locale={navigator.language}>
+                    <NotificationContextProvider>
+                        <QueryClientProvider client={client}>
+                            <AuthProvider>
+                                <BrowserRouter>
+                                    <AppBarContextProvider>
+                                        <Routes>
+                                            <Route path="/" element={<Layout/>}>
+                                                <Route index element={
+                                                    <MonetaryAccountContainer>
+                                                        <BunqView/>
+                                                    </MonetaryAccountContainer>
+                                                }/>
+                                                <Route path="settings" element={<SettingsPage/>}/>
+                                            </Route>
+                                            <Route path="/settings" element={<SettingsPageLayout/>}>
+                                                <Route path="info" element={<SettingsInfoPage/>}/>
+                                                <Route path="admin-center" element={<SettingsAdminCenterPage/>}/>
+                                                <Route path="overview" element={<SettingsOverviewPage/>}/>
+                                                <Route path="profile" element={<SettingsProfilePage/>}/>
+                                            </Route>
+                                        </Routes>
+                                        {import.meta.env.DEV && <ReactQueryDevtools/>}
+                                    </AppBarContextProvider>
+                                </BrowserRouter>
+                            </AuthProvider>
+                        </QueryClientProvider>
+                    </NotificationContextProvider>
+                </IntlProvider>
             </ColorModeContextProvider>
         </>
     )
