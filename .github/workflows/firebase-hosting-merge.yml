@@ -40,8 +40,10 @@ jobs:
         id: date
         run: echo "::set-output name=date::$(date +'%d.%m.%y - %H:%M')"
 
-      - run: yarn install && yarn build:release
+      - name: Build release
+        run: yarn install && yarn build:release
         env:
+          VITE_APP_NAME: "Wie gehts BUNQ?"
           VITE_APP_VERSION: ${{ steps.ghd.outputs.tag }}
           VITE_CURRENT_BRANCH: main
           VITE_LAST_COMMIT: ${{ steps.commit.outputs.short }}
