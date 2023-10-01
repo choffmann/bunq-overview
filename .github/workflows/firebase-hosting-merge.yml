@@ -7,7 +7,7 @@ name: Deploy to Firebase Hosting on merge
     branches:
       - main
 jobs:
-  tag:
+  build_and_deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -17,8 +17,8 @@ jobs:
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.1
         with:
-          dry_run: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: false
 
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
@@ -27,15 +27,13 @@ jobs:
           name: Release ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}
 
-  build_and_deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
       - name: Extract tag name
         uses: proudust/gh-describe@v1
         id: ghd
+
+      - name: Commit hash
+        id: commit
+        uses: prompt/actions-commit-hash@v3
 
       - name: Get current date
         id: date
@@ -45,7 +43,7 @@ jobs:
         env:
           VITE_APP_VERSION: ${{ steps.ghd.outputs.tag }}
           VITE_CURRENT_BRANCH: main
-          VITE_LAST_COMMIT: ${{ steps.ghd.outputs.sha }}
+          VITE_LAST_COMMIT: ${{ steps.commit.outputs.short }}
           VITE_APP_BUILD_DATETIME: ${{ steps.date.outputs.date }}
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
