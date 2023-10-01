@@ -6,6 +6,7 @@ import {BunqApiContext} from "./BunqApiContext";
 import {ApiResponse} from "./model/ApiResponse";
 import {ErrorResponse} from "./model/BunqApiResponse";
 import {SecretParam} from "firebase-functions/lib/params/types";
+import {validateFirebaseIdToken} from "./express/validateFirebaseIdToken";
 
 const sandboxApiKey = "sandbox_39949d0c10c82768dc69a8831754fa1c9333bde07f336d17e9c31122"
 const apiKey = defineSecret("API_KEY")
@@ -40,12 +41,14 @@ function sendApiResponse<T>(res: Response, dto: ApiResponse<T>, defaultMessage?:
 }
 
 exports.bunqAccount = onRequest({cors: true, secrets: [apiKey]}, async (req, res) => {
+    await validateFirebaseIdToken(req, res)
     await initOnRequest(apiKey)
     apiContext.account(iban.value())
         .then(response => sendApiResponse(res, response, "No MonetaryAccount found"))
 })
 
 exports.bunqPayments = onRequest({cors: true, secrets: [apiKey]}, async (req, res) => {
+    await validateFirebaseIdToken(req, res)
     await initOnRequest(apiKey)
     apiContext.payments(req.body.data["monetaryId"])
         .then(response => sendApiResponse(res, response))

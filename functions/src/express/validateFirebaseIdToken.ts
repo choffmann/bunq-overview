@@ -2,7 +2,7 @@ import * as functions from 'firebase-functions'
 import * as express from 'express'
 import * as admin from 'firebase-admin'
 
-export const validateFirebaseIdToken = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+export const validateFirebaseIdToken = async (req: express.Request, res: express.Response) => {
     if ((!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')) &&
         !(req.cookies && req.cookies.__session)) {
         functions.logger.error(
@@ -34,7 +34,6 @@ export const validateFirebaseIdToken = async (req: express.Request, res: express
         const decodedIdToken = await admin.auth().verifyIdToken(idToken);
         functions.logger.log('ID Token correctly decoded', decodedIdToken);
         req.body.user = decodedIdToken;
-        next();
         return;
     } catch (error) {
         functions.logger.error('Error while verifying Firebase ID token:', error);
