@@ -83,20 +83,20 @@ const pwaManifest: Partial<VitePWAOptions> = {
     }
 }
 
-export default () => {
-    const appName = "Wie gehts BUNQ?"
-    const gitLatestTag = execSync("git describe --tags --abbrev=0").toString().trimEnd()
-    const gitCurrentBranch = execSync("git rev-parse --abbrev-ref HEAD").toString().trimEnd()
-    const gitLastCommit = execSync("git rev-parse --short HEAD").toString().trimEnd()
-    const gitBuildDateTime = execSync("git log -1 --format=%cd --date=format:\"%d.%m.%y - %H:%M\"").toString().trimEnd()
-    const gitBuildDate = execSync("git log -1 --format=%cd --date=format:\"%d.%m.%y\"").toString().trimEnd()
+export default ({mode}: ConfigEnv) => {
+    if (mode === "dev") {
+        const appName = "Wie gehts BUNQ?"
+        const gitLatestTag = execSync("git describe --tags --abbrev=0").toString().trimEnd()
+        const gitCurrentBranch = execSync("git rev-parse --abbrev-ref HEAD").toString().trimEnd()
+        const gitLastCommit = execSync("git rev-parse --short HEAD").toString().trimEnd()
+        const gitBuildDateTime = execSync("git log -1 --format=%cd --date=format:\"%d.%m.%y - %H:%M\"").toString().trimEnd()
 
-    process.env.VITE_APP_NAME = appName
-    process.env.VITE_APP_VERSION = gitLatestTag
-    process.env.VITE_CURRENT_BRANCH = gitCurrentBranch
-    process.env.VITE_LAST_COMMIT = gitLastCommit
-    process.env.VITE_APP_BUILDDATE = gitBuildDate
-    process.env.VITE_APP_BUILDDATETime = gitBuildDateTime
+        process.env.VITE_APP_NAME = appName
+        process.env.VITE_APP_VERSION = gitLatestTag
+        process.env.VITE_CURRENT_BRANCH = gitCurrentBranch
+        process.env.VITE_LAST_COMMIT = gitLastCommit
+        process.env.VITE_APP_BUILD_DATETIME = gitBuildDateTime
+    }
 
     return defineConfig({
         base: "./",

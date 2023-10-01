@@ -22,7 +22,7 @@ const SettingsInfoPage = ({}: SettingsInfoPageProps) => {
                 </ListItem>
                 <ListItem>
                     <ListItemText>App Icon</ListItemText>
-                    <img src="/assets/icons/logo_square-96.png" height={24} width={24}/>
+                    <img src="/assets/icons/logo_square-96.png" height={24} width={24} alt="app logo"/>
                 </ListItem>
             </List>
             <List subheader={<ListSubheader>Build Info</ListSubheader>}>
@@ -40,7 +40,7 @@ const SettingsInfoPage = ({}: SettingsInfoPageProps) => {
                 </ListItem>
                 <ListItem>
                     <ListItemText>Build Datum</ListItemText>
-                    <Typography>{import.meta.env.VITE_APP_BUILDDATETime}</Typography>
+                    <Typography>{import.meta.env.VITE_APP_BUILD_DATETIME}</Typography>
                 </ListItem>
             </List>
         </>

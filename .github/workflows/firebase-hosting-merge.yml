@@ -30,8 +30,24 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Extract tag name
+        uses: proudust/gh-describe@v1
+        id: ghd
+
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%d.%m.%y - %H:%M')"
+
       - run: yarn install && yarn build
+        env:
+          VITE_APP_VERSION: ${{ steps.ghd.outputs.tag }}
+          VITE_CURRENT_BRANCH: main
+          VITE_LAST_COMMIT: ${{ steps.ghd.outputs.sha }}
+          VITE_APP_BUILD_DATETIME: ${{ steps.date.outputs.date }}
+
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
