@@ -20,13 +20,12 @@ import {
     Message, Replay,
     Settings
 } from "@mui/icons-material";
-import {useSignOut} from "react-firebase-hooks/auth";
-import {auth} from "../../firebase/firebaseSetup.ts";
 import {useNotify} from "../../context/NotificationContext.tsx";
 import {useAppBar} from "../../context/AppBarContext.tsx";
 import {useAuthContext} from "../../context/AuthContext.ts";
 import {useColorModeContext} from "../../context/ColorModeContext.tsx";
 import {Link} from "react-router-dom";
+import {useLogOut} from "../../hooks/useLogOut.ts";
 
 export interface AppDrawerProps {
     children?: React.ReactElement
@@ -37,7 +36,7 @@ const AppDrawer = ({children}: AppDrawerProps) => {
     const appBar = useAppBar()
     const user = useAuthContext()
     const {colorMode, toggleColorMode} = useColorModeContext()
-    const [signOut, _, error] = useSignOut(auth);
+    const logout = useLogOut();
     const iOS = typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent);
     const [openDebugList, setOpenDebugList] = useState(false)
 
@@ -76,15 +75,6 @@ const AppDrawer = ({children}: AppDrawerProps) => {
         appBar.navBar.close()
     }
 
-    const handleLogOut = async () => {
-        const success = await signOut()
-        if (success) notify('Du wurdest erfolgreich abgemeldet');
-        if (error) {
-            notify("Es ist ein Fehler beim abmelden aufgetreten")
-            console.error(error)
-        }
-    }
-
     const handleDebugList = () => {
         setOpenDebugList(value => !value)
     }
@@ -119,7 +109,7 @@ const AppDrawer = ({children}: AppDrawerProps) => {
                                 <ListItemIcon><Settings/></ListItemIcon>
                                 <ListItemText>Einstellungen</ListItemText>
                             </ListItemButton>
-                            <ListItemButton onClick={() => handleLogOut()}>
+                            <ListItemButton onClick={() => logout()}>
                                 <ListItemIcon><Logout/></ListItemIcon>
                                 <ListItemText>Abmelden</ListItemText>
                             </ListItemButton>

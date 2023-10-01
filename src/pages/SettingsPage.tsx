@@ -1,7 +1,6 @@
 import {useAppBar} from "../context/AppBarContext.tsx";
 import {useEffect} from "react";
 import {
-    Avatar,
     List,
     ListItem,
     ListItemButton,
@@ -22,6 +21,7 @@ import {
 import {useAuthContext} from "../context/AuthContext.ts";
 import {Link} from "react-router-dom";
 import {useColorModeContext} from "../context/ColorModeContext.tsx";
+import AccountInfo from "../components/account/AccountInfo.tsx";
 
 interface SettingsPageProps {
 
@@ -35,16 +35,11 @@ const SettingsPage = ({}: SettingsPageProps) => {
 
     useEffect(() => {
         appBar.setTitle("Einstellungen")
-        console.log(colorMode)
     }, []);
 
     return (
         <>
-            <Stack justifyContent="center" alignItems="center" sx={{my: 2}}>
-                <Avatar sx={{width: 96, height: 96}} src={user.photoURL ?? undefined}/>
-                <Typography variant="h5" sx={{pt: 1}}>{user.displayName}</Typography>
-                <Typography variant="subtitle1">{user.email}</Typography>
-            </Stack>
+            <AccountInfo/>
             <List>
                 <ListItem>
                     <ListItemIcon><DarkMode/></ListItemIcon>

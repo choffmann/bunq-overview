@@ -11,6 +11,10 @@ import Layout from "./pages/Layout.tsx";
 import {QueryClient, QueryClientProvider} from "react-query";
 import {ReactQueryDevtools} from "react-query/devtools";
 import SettingsInfoPage from "./pages/settings/SettingsInfoPage.tsx";
+import SettingsOverviewPage from "./pages/settings/SettingsOverviewPage.tsx";
+import SettingsProfilePage from "./pages/settings/SettingsProfilePage.tsx";
+import SettingsPageLayout from "./pages/settings/SettingsPageLayout.tsx";
+import SettingsAdminCenterPage from "./pages/settings/SettingsAdminCenterPage.tsx";
 
 function App() {
     const client = new QueryClient()
@@ -21,8 +25,9 @@ function App() {
                 <NotificationContextProvider>
                     <QueryClientProvider client={client}>
                         <AuthProvider>
-                            <AppBarContextProvider>
-                                <BrowserRouter>
+                            <BrowserRouter>
+
+                                <AppBarContextProvider>
                                     <Routes>
                                         <Route path="/" element={<Layout/>}>
                                             <Route index element={
@@ -32,16 +37,16 @@ function App() {
                                             }/>
                                             <Route path="settings" element={<SettingsPage/>}/>
                                         </Route>
-                                        <Route path="/settings" element={<Layout/>}>
+                                        <Route path="/settings" element={<SettingsPageLayout/>}>
                                             <Route path="info" element={<SettingsInfoPage/>}/>
-                                            <Route path="admin-center" element={<SettingsInfoPage/>}/>
-                                            <Route path="overview" element={<SettingsInfoPage/>}/>
-                                            <Route path="profile" element={<SettingsInfoPage/>}/>
+                                            <Route path="admin-center" element={<SettingsAdminCenterPage/>}/>
+                                            <Route path="overview" element={<SettingsOverviewPage/>}/>
+                                            <Route path="profile" element={<SettingsProfilePage/>}/>
                                         </Route>
                                     </Routes>
-                                </BrowserRouter>
-                                {import.meta.env.DEV && <ReactQueryDevtools/>}
-                            </AppBarContextProvider>
+                                    {import.meta.env.DEV && <ReactQueryDevtools/>}
+                                </AppBarContextProvider>
+                            </BrowserRouter>
                         </AuthProvider>
                     </QueryClientProvider>
                 </NotificationContextProvider>

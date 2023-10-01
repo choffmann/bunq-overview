@@ -2,6 +2,7 @@ import {AppBar, Box, IconButton, LinearProgress, Toolbar, Typography} from "@mui
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import {useAppBar} from "../../context/AppBarContext.tsx";
+import {KeyboardArrowLeft} from "@mui/icons-material";
 
 interface TopAppBarProps {
 
@@ -9,6 +10,16 @@ interface TopAppBarProps {
 
 const TopAppBar = ({}: TopAppBarProps) => {
     const appBar = useAppBar()
+
+    const NavIcon = () => {
+        switch (appBar.navIcon.variant) {
+            case "menu":
+                return <MenuIcon/>
+            case "navigation":
+                return <KeyboardArrowLeft/>
+        }
+    }
+
     return (
         <Box sx={{flexGrow: 1}}>
             <AppBar component="nav">
@@ -19,9 +30,9 @@ const TopAppBar = ({}: TopAppBarProps) => {
                         color="inherit"
                         aria-label="open drawer"
                         sx={{mr: 2}}
-                        onClick={() => appBar.navBar.open()}
+                        onClick={() => appBar.navIcon.onClick()}
                     >
-                        <MenuIcon/>
+                        <NavIcon/>
                     </IconButton>
                     <Typography
                         variant="h6"
