@@ -9,8 +9,9 @@ const Layout = ({}: LayoutProps) => {
     return (
         <>
             <TopAppBar/>
-            <AppDrawer/>
-            <Outlet/>
+            <AppDrawer>
+                <Outlet/>
+            </AppDrawer>
         </>
     )
 }
