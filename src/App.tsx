@@ -10,6 +10,7 @@ import SettingsPage from "./pages/SettingsPage.tsx";
 import Layout from "./pages/Layout.tsx";
 import {QueryClient, QueryClientProvider} from "react-query";
 import {ReactQueryDevtools} from "react-query/devtools";
+import SettingsInfoPage from "./pages/settings/SettingsInfoPage.tsx";
 
 function App() {
     const client = new QueryClient()
@@ -30,6 +31,12 @@ function App() {
                                                 </MonetaryAccountContainer>
                                             }/>
                                             <Route path="settings" element={<SettingsPage/>}/>
+                                        </Route>
+                                        <Route path="/settings" element={<Layout/>}>
+                                            <Route path="info" element={<SettingsInfoPage/>}/>
+                                            <Route path="admin-center" element={<SettingsInfoPage/>}/>
+                                            <Route path="overview" element={<SettingsInfoPage/>}/>
+                                            <Route path="profile" element={<SettingsInfoPage/>}/>
                                         </Route>
                                     </Routes>
                                 </BrowserRouter>

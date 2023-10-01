@@ -1,6 +1,7 @@
-import {defineConfig} from 'vite'
+import {ConfigEnv, defineConfig} from 'vite'
 import react from '@vitejs/plugin-react'
 import {VitePWA, VitePWAOptions} from "vite-plugin-pwa";
+import {execSync} from 'child_process'
 
 // https://vitejs.dev/config/
 
@@ -82,18 +83,32 @@ const pwaManifest: Partial<VitePWAOptions> = {
     }
 }
 
-export default defineConfig({
-    base: "./",
-    plugins: [react(), VitePWA(pwaManifest)],
-    build: {
-        emptyOutDir: true
-    },
-    server: {
-        watch: {
-            usePolling: true,
+export default () => {
+    const appName = "Wie gehts BUNQ?"
+    const gitLatestTag = execSync("git describe --tags --abbrev=0").toString().trimEnd()
+    const gitLastCommit = execSync("git rev-parse --short HEAD").toString().trimEnd()
+    const gitBuildDateTime = execSync("git log -1 --format=%cd --date=format:\"%d.%m.%y - %H:%M\"").toString().trimEnd()
+    const gitBuildDate = execSync("git log -1 --format=%cd --date=format:\"%d.%m.%y\"").toString().trimEnd()
+
+    process.env.VITE_APP_NAME = appName
+    process.env.VITE_APP_VERSION = gitLatestTag
+    process.env.VITE_LAST_COMMIT = gitLastCommit
+    process.env.VITE_APP_BUILDDATE = gitBuildDate
+    process.env.VITE_APP_BUILDDATETime = gitBuildDateTime
+
+    return defineConfig({
+        base: "./",
+        plugins: [react(), VitePWA(pwaManifest)],
+        build: {
+            emptyOutDir: true
         },
-        host: true,
-        strictPort: true,
-        port: 5173,
-    }
-})
+        server: {
+            watch: {
+                usePolling: true,
+            },
+            host: true,
+            strictPort: true,
+            port: 5173,
+        }
+    })
+}

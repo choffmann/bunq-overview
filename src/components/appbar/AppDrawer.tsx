@@ -130,7 +130,7 @@ const AppDrawer = ({children}: AppDrawerProps) => {
             </nav>
             <Box component="main">
                 <Toolbar/>
-                <Container>
+                <Container disableGutters>
                     {children}
                 </Container>
             </Box>
