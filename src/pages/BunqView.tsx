@@ -1,5 +1,4 @@
 import {useMonetaryAccountContext} from "../context/MonetaryAccountContext.ts";
-import {Container} from "@mui/material";
 import PaymentsList from "../components/payments/PaymentsList.tsx";
 import BalanceView from "../components/balance/BalanceView.tsx";
 import {useEffect} from "react";
@@ -22,14 +21,12 @@ const BunqView = () => {
 
     return (
         <>
-            <Container>
-                {data &&
-                    <>
-                        <BalanceView monetaryAccount={data}/>
-                        <PaymentsList/>
-                    </>
-                }
-            </Container>
+            {data &&
+                <>
+                    <BalanceView monetaryAccount={data}/>
+                    <PaymentsList/>
+                </>
+            }
         </>
     )
 }

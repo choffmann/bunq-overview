@@ -8,30 +8,35 @@ import ColorModeContextProvider from "./context/ColorModeContext.tsx";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import SettingsPage from "./pages/SettingsPage.tsx";
 import Layout from "./pages/Layout.tsx";
+import {QueryClient, QueryClientProvider} from "react-query";
+import {ReactQueryDevtools} from "react-query/devtools";
 
 function App() {
+    const client = new QueryClient()
     return (
         <>
             <ColorModeContextProvider>
                 <CssBaseline/>
                 <NotificationContextProvider>
-                    <AuthProvider>
-                        <AppBarContextProvider>
-                            <BrowserRouter>
-                                <Routes>
-                                    <Route path="/" element={<Layout />}>
-                                        <Route index element={
-                                            <MonetaryAccountContainer>
-                                                <BunqView/>
-                                            </MonetaryAccountContainer>
-                                        }/>
-                                        <Route path="settings" element={<SettingsPage/>}/>
-                                    </Route>
-                                </Routes>
-                            </BrowserRouter>
-
-                        </AppBarContextProvider>
-                    </AuthProvider>
+                    <QueryClientProvider client={client}>
+                        <AuthProvider>
+                            <AppBarContextProvider>
+                                <BrowserRouter>
+                                    <Routes>
+                                        <Route path="/" element={<Layout/>}>
+                                            <Route index element={
+                                                <MonetaryAccountContainer>
+                                                    <BunqView/>
+                                                </MonetaryAccountContainer>
+                                            }/>
+                                            <Route path="settings" element={<SettingsPage/>}/>
+                                        </Route>
+                                    </Routes>
+                                </BrowserRouter>
+                                {import.meta.env.DEV && <ReactQueryDevtools/>}
+                            </AppBarContextProvider>
+                        </AuthProvider>
+                    </QueryClientProvider>
                 </NotificationContextProvider>
             </ColorModeContextProvider>
         </>

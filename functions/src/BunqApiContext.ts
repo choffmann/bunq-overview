@@ -231,7 +231,7 @@ export class BunqApiContext {
     }
 
     async payments(monetaryId: string): Promise<ApiResponse<Payment[]>> {
-        const countLimit = 150
+        const countLimit = 50
         const options = {
             method: "GET", headers: {
                 ...defaultHeader,

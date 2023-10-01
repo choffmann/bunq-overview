@@ -1,12 +1,12 @@
 import {
-    Avatar,
-    Collapse,
+    Avatar, Box,
+    Collapse, Container,
     Divider,
     List, ListItem, ListItemAvatar,
     ListItemButton,
     ListItemIcon,
     ListItemText,
-    SwipeableDrawer, Switch
+    SwipeableDrawer, Switch, Toolbar
 } from "@mui/material";
 import React, {useState} from "react";
 import {
@@ -49,21 +49,22 @@ const AppDrawer = ({children}: AppDrawerProps) => {
         </ListItemButton>
         <Collapse in={openDebugList}>
             <List>
-                <ListItem sx={{ pl: 4 }}>
+                <ListItem sx={{pl: 4}}>
                     <ListItemIcon><DarkMode/></ListItemIcon>
                     <ListItemText>Dark Mode</ListItemText>
                     <Switch value={colorMode === "dark"} onChange={() => handleSwitchColorMode()}/>
                 </ListItem>
-                <ListItem sx={{ pl: 4 }}>
+                <ListItem sx={{pl: 4}}>
                     <ListItemIcon><Cached/></ListItemIcon>
                     <ListItemText>Loading</ListItemText>
-                    <Switch value={appBar.loading.isLoading} onChange={(_, checked) => appBar.loading.setLoading(checked)}/>
+                    <Switch value={appBar.loading.isLoading}
+                            onChange={(_, checked) => appBar.loading.setLoading(checked)}/>
                 </ListItem>
-                <ListItemButton onClick={() => handleTriggerSnackBar()} sx={{ pl: 4 }}>
+                <ListItemButton onClick={() => handleTriggerSnackBar()} sx={{pl: 4}}>
                     <ListItemIcon><Message/></ListItemIcon>
                     <ListItemText>Trigger Snackbar</ListItemText>
                 </ListItemButton>
-                <ListItemButton onClick={() => window.location.reload()} sx={{ pl: 4 }}>
+                <ListItemButton onClick={() => window.location.reload()} sx={{pl: 4}}>
                     <ListItemIcon><Replay/></ListItemIcon>
                     <ListItemText>Reload Page</ListItemText>
                 </ListItemButton>
@@ -99,31 +100,40 @@ const AppDrawer = ({children}: AppDrawerProps) => {
 
     return (
         <>
-            <SwipeableDrawer anchor="left" open={appBar.navBar.isOpen} onClose={() => appBar.navBar.close()}
-                             onOpen={() => appBar.navBar.open()} disableBackdropTransition={!iOS}
-                             disableDiscovery={iOS}>
-                <List>
-                    <ListItemButton>
-                        <ListItemAvatar><Avatar src={user.photoURL ?? undefined}/></ListItemAvatar>
-                        <ListItemText primary={user.displayName} secondary={user.email}/>
-                    </ListItemButton>
-                    <Divider/>
-                    <ListItemButton component={Link} to="/" onClick={() => handleSettings()}>
-                        <ListItemIcon><FormatListBulleted/></ListItemIcon>
-                        <ListItemText>Übersicht</ListItemText>
-                    </ListItemButton>
-                    <ListItemButton component={Link} to="/settings" onClick={() => handleSettings()}>
-                        <ListItemIcon><Settings/></ListItemIcon>
-                        <ListItemText>Einstellungen</ListItemText>
-                    </ListItemButton>
-                    <ListItemButton onClick={() => handleLogOut()}>
-                        <ListItemIcon><Logout/></ListItemIcon>
-                        <ListItemText>Abmelden</ListItemText>
-                    </ListItemButton>
-                    {import.meta.env.DEV && debugList}
-                </List>
-            </SwipeableDrawer>
-            {children}
+            <nav>
+                <SwipeableDrawer anchor="left" open={appBar.navBar.isOpen} onClose={() => appBar.navBar.close()}
+                                 onOpen={() => appBar.navBar.open()} disableBackdropTransition={!iOS}
+                                 disableDiscovery={iOS}>
+                    <Box sx={{minWidth: "300px"}}>
+                        <List>
+                            <ListItemButton>
+                                <ListItemAvatar><Avatar src={user.photoURL ?? undefined}/></ListItemAvatar>
+                                <ListItemText primary={user.displayName} secondary={user.email}/>
+                            </ListItemButton>
+                            <Divider/>
+                            <ListItemButton component={Link} to="/" onClick={() => handleSettings()}>
+                                <ListItemIcon><FormatListBulleted/></ListItemIcon>
+                                <ListItemText>Übersicht</ListItemText>
+                            </ListItemButton>
+                            <ListItemButton component={Link} to="/settings" onClick={() => handleSettings()}>
+                                <ListItemIcon><Settings/></ListItemIcon>
+                                <ListItemText>Einstellungen</ListItemText>
+                            </ListItemButton>
+                            <ListItemButton onClick={() => handleLogOut()}>
+                                <ListItemIcon><Logout/></ListItemIcon>
+                                <ListItemText>Abmelden</ListItemText>
+                            </ListItemButton>
+                            {import.meta.env.DEV && debugList}
+                        </List>
+                    </Box>
+                </SwipeableDrawer>
+            </nav>
+            <Box component="main">
+                <Toolbar/>
+                <Container>
+                    {children}
+                </Container>
+            </Box>
         </>
     )
 }

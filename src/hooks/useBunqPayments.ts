@@ -1,24 +1,16 @@
-import {useCallback, useEffect, useState} from "react";
 import {useHttpsCallable} from "react-firebase-hooks/functions";
 import {getFunctions} from "firebase/functions";
 import {firebaseApp} from "../firebase/firebaseSetup.ts";
 import {Payment} from "../model/Payment.ts";
+import {useQuery} from "react-query";
+
 export function useBunqPayments(accountId: number) {
-    const [payments, setPayments] = useState<Payment[]>([])
-    const [executeCallable, executing, error] = useHttpsCallable(
-        getFunctions(firebaseApp),
-        `bunqPayments`
-    );
+    const [executeCallable] = useHttpsCallable(getFunctions(firebaseApp), `bunqPayments`);
 
-    const executeFunction = useCallback(async () => {
-        const response = await executeCallable({monetaryId: accountId})
-        if (response === undefined) throw Error("Es ist ein Fehler beim Aufrufen der Zahlungsübersicht aufgetreten")
-        setPayments((response?.data as Payment[]))
-    }, [])
+    const callable = () => executeCallable({monetaryId: accountId})
+        .then(res => res?.data as Payment[])
 
-    useEffect(() => {
-        executeFunction().catch(console.warn)
-    }, []);
+    const {data, isFetching, error} = useQuery<Payment[]>(["payments"], callable)
 
-    return {payments, executing, error}
+    return {payments: data || [], executing: isFetching, error}
 }

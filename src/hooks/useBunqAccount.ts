@@ -1,28 +1,13 @@
 import {getFunctions} from 'firebase/functions';
 import {useHttpsCallable} from 'react-firebase-hooks/functions';
 import {firebaseApp} from "../firebase/firebaseSetup.ts";
-import {useCallback, useEffect, useState} from "react";
 import MonetaryAccountBank from "../model/MonetaryAccountDto.ts";
+import {useQuery} from "react-query";
 
 export function useBunqAccount() {
-    const [monetaryAccount, setMonetaryAccount] = useState<MonetaryAccountBank>()
-    const [executeCallable, executing, error] = useHttpsCallable(
-        getFunctions(firebaseApp),
-        `bunqAccount`
-    );
+    const [executeCallable] = useHttpsCallable(getFunctions(firebaseApp), `bunqAccount`)
+    const executeFunction = () => executeCallable().then(res => res?.data as MonetaryAccountBank)
+    const {data, isFetching, error} = useQuery<MonetaryAccountBank>(["monetaryBankAccount"], executeFunction)
 
-    const executeFunction = useCallback(async () => {
-        const response = await executeCallable()
-        setMonetaryAccount((response?.data as MonetaryAccountBank))
-    }, [])
-
-    useEffect(() => {
-        executeFunction().catch(console.warn)
-    }, []);
-
-    useEffect(() => {
-        error && console.warn("Error in useBunqAccount", error)
-    }, [error]);
-
-    return {monetaryAccount, executing, error}
+    return {monetaryAccount: data, executing: isFetching, error}
 }
