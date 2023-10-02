@@ -1,9 +1,9 @@
 import {
-    Avatar,
+    Avatar, Box,
     List,
     ListItem,
     ListItemAvatar,
-    ListItemText,
+    ListItemText, ListSubheader,
     Skeleton,
     Typography
 } from "@mui/material";
@@ -12,8 +12,13 @@ import PaymentListElement from "./PaymentListElement.tsx";
 import {useMonetaryAccountContext} from "../../context/MonetaryAccountContext.ts";
 import {useAppBar} from "../../context/AppBarContext.tsx";
 import {useEffect} from "react";
+import {FormattedRelativeTime} from "react-intl";
 
-const PaymentsList = () => {
+export interface PaymentsListProps{
+    remainingHeight: string
+}
+
+const PaymentsList = ({remainingHeight}: PaymentsListProps) => {
     const appBar = useAppBar()
     const {data} = useMonetaryAccountContext()
     const {payments, executing} = useBunqPayments(data.id)
@@ -22,7 +27,8 @@ const PaymentsList = () => {
         appBar.loading.setLoading(executing)
     }, [executing]);
 
-    const emptyList =
+
+    const EmptyList =
         <ListItem>
             <Typography color="text.secondary">Es sind keine Einträge verfügbar</Typography>
         </ListItem>
@@ -39,14 +45,32 @@ const PaymentsList = () => {
     )
 
     return (
-        <List>
-            {executing && payments.length <= 0 && loading()}
-            {payments.length <= 0 ? emptyList && !executing :
-                payments.map(payment => {
-                    return <PaymentListElement payment={payment}/>
-                })
-            }
-        </List>
+        <Box sx={{}}>
+            <List
+                subheader={<li/>}
+                sx={{
+                    height: remainingHeight,
+                    bgcolor: 'background.paper',
+                    position: 'relative',
+                    overflow: 'auto',
+                    '& ul': {padding: 0},
+                }}>
+                {executing && loading()}
+                {payments && payments.length <= 0 && <EmptyList/>}
+                {payments && payments.map(([week, value]) => {
+                    return (
+                        <li>
+                            <ul>
+                                <ListSubheader>
+                                    <FormattedRelativeTime value={week * -1} unit="week"/>
+                                </ListSubheader>
+                                {value.map(payment => <PaymentListElement payment={payment}/>)}
+                            </ul>
+                        </li>
+                    )
+                })}
+            </List>
+        </Box>
     )
 }
 

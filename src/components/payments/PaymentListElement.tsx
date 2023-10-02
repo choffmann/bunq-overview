@@ -1,6 +1,5 @@
 import {Avatar, ListItem, ListItemAvatar, ListItemText, Typography} from "@mui/material";
 import {Payment} from "../../model/Payment.ts";
-
 export interface PaymentListElementProps {
     payment: Payment
 }
@@ -25,7 +24,9 @@ const PaymentListElement = ({payment}: PaymentListElementProps) => {
             <ListItemAvatar>
                 {handleAvatar()}
             </ListItemAvatar>
-            <ListItemText primaryTypographyProps={{style: {whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}, pr: 4}} primary={payment.counterparty_alias.display_name}/>
+            <ListItemText
+                primaryTypographyProps={{style: {whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}, pr: 4}}
+                primary={payment.counterparty_alias.display_name}/>
         </ListItem>
     )
 }
