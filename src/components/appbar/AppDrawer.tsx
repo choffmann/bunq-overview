@@ -22,10 +22,10 @@ import {
 } from "@mui/icons-material";
 import {useNotify} from "../../context/NotificationContext.tsx";
 import {useAppBar} from "../../context/AppBarContext.tsx";
-import {useAuthContext} from "../../context/AuthContext.ts";
 import {useColorModeContext} from "../../context/ColorModeContext.tsx";
 import {Link} from "react-router-dom";
 import {useLogOut} from "../../hooks/useLogOut.ts";
+import {useAuth} from "../../context/AuthContext.tsx";
 
 export interface AppDrawerProps {
     children?: React.ReactElement
@@ -34,7 +34,7 @@ export interface AppDrawerProps {
 const AppDrawer = ({children}: AppDrawerProps) => {
     const notify = useNotify()
     const appBar = useAppBar()
-    const user = useAuthContext()
+    const {user} = useAuth()
     const {colorMode, toggleColorMode} = useColorModeContext()
     const logout = useLogOut();
     const iOS = typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -97,8 +97,8 @@ const AppDrawer = ({children}: AppDrawerProps) => {
                     <Box sx={{minWidth: "300px"}}>
                         <List>
                             <ListItemButton>
-                                <ListItemAvatar><Avatar src={user.photoURL ?? undefined}/></ListItemAvatar>
-                                <ListItemText primary={user.displayName} secondary={user.email}/>
+                                <ListItemAvatar><Avatar src={user?.photoURL ?? undefined}/></ListItemAvatar>
+                                <ListItemText primary={user?.displayName} secondary={user?.email}/>
                             </ListItemButton>
                             <Divider/>
                             <ListItemButton component={Link} to="/" onClick={() => handleSettings()}>

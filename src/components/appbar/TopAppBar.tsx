@@ -3,6 +3,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import {useAppBar} from "../../context/AppBarContext.tsx";
 import {KeyboardArrowLeft} from "@mui/icons-material";
+import {useEffect} from "react";
 
 interface TopAppBarProps {
 
@@ -10,6 +11,10 @@ interface TopAppBarProps {
 
 const TopAppBar = ({}: TopAppBarProps) => {
     const appBar = useAppBar()
+
+    useEffect(() => {
+        return () => appBar.navBar.close()
+    }, []);
 
     const NavIcon = () => {
         switch (appBar.navIcon.variant) {

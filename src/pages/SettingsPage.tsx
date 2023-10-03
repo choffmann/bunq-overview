@@ -18,10 +18,10 @@ import {
     KeyboardArrowRight,
     SupervisedUserCircle
 } from "@mui/icons-material";
-import {useAuthContext} from "../context/AuthContext.ts";
 import {Link} from "react-router-dom";
 import {useColorModeContext} from "../context/ColorModeContext.tsx";
 import AccountInfo from "../components/account/AccountInfo.tsx";
+import {useAuth} from "../context/AuthContext.tsx";
 
 interface SettingsPageProps {
 
@@ -30,8 +30,8 @@ interface SettingsPageProps {
 const SettingsPage = ({}: SettingsPageProps) => {
     const appBar = useAppBar()
     const {colorMode, toggleColorMode} = useColorModeContext()
-    const user = useAuthContext()
-    const isAdmin = import.meta.env.DEV || user.uid === "8dUHVOe2i4gWaLz0tUXlzS7wsxx2"
+    const {user} = useAuth()
+    const isAdmin = import.meta.env.DEV || user?.uid === "8dUHVOe2i4gWaLz0tUXlzS7wsxx2"
 
     useEffect(() => {
         appBar.setTitle("Einstellungen")
