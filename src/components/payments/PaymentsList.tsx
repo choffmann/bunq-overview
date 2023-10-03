@@ -28,7 +28,7 @@ const PaymentsList = ({remainingHeight}: PaymentsListProps) => {
     }, [executing]);
 
 
-    const EmptyList =
+    const EmptyList = () =>
         <ListItem>
             <Typography color="text.secondary">Es sind keine Einträge verfügbar</Typography>
         </ListItem>
@@ -54,6 +54,7 @@ const PaymentsList = ({remainingHeight}: PaymentsListProps) => {
                     position: 'relative',
                     overflow: 'auto',
                     '& ul': {padding: 0},
+                    '&::-webkit-scrollbar': {display: "none"}
                 }}>
                 {executing && loading()}
                 {payments && payments.length <= 0 && <EmptyList/>}
@@ -61,9 +62,13 @@ const PaymentsList = ({remainingHeight}: PaymentsListProps) => {
                     return (
                         <li>
                             <ul>
-                                <ListSubheader>
-                                    <FormattedRelativeTime value={week * -1} unit="week"/>
-                                </ListSubheader>
+                                {week === 0 ?
+                                    <ListSubheader>Diese Woche</ListSubheader>
+                                    : <ListSubheader>
+                                        <FormattedRelativeTime value={week * -1} unit="week"/>
+                                    </ListSubheader>
+                                }
+
                                 {value.map(payment => <PaymentListElement payment={payment}/>)}
                             </ul>
                         </li>

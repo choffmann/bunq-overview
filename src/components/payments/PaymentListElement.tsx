@@ -1,5 +1,6 @@
 import {Avatar, ListItem, ListItemAvatar, ListItemText, Typography} from "@mui/material";
 import {Payment} from "../../model/Payment.ts";
+import {FormattedDate} from "react-intl";
 export interface PaymentListElementProps {
     payment: Payment
 }
@@ -26,7 +27,8 @@ const PaymentListElement = ({payment}: PaymentListElementProps) => {
             </ListItemAvatar>
             <ListItemText
                 primaryTypographyProps={{style: {whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}, pr: 4}}
-                primary={payment.counterparty_alias.display_name}/>
+                primary={payment.counterparty_alias.display_name}
+                secondary={<FormattedDate value={new Date(payment.created)} />}/>
         </ListItem>
     )
 }

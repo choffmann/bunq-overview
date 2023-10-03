@@ -7,11 +7,11 @@ import {Box} from "@mui/material";
 
 const BunqView = () => {
     const appBar = useAppBar()
-    const balanceRef = useRef(null)
+    const balanceRef = useRef<HTMLDivElement>()
     const {data, isFetching} = useMonetaryAccountContext()
     const [upperComponentHeight, setUpperComponentHeight] = useState(0)
     const toolBarHeight = 64
-    const remainingHeight = `calc(100vh - ${upperComponentHeight}px - ${toolBarHeight}px)`;
+    const remainingHeight = `calc(100vh - ${upperComponentHeight}px - ${toolBarHeight}px - 30px)`;
 
     useEffect(() => {
         if (balanceRef.current) {
