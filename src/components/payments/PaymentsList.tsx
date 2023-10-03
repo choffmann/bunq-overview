@@ -14,7 +14,7 @@ import {useAppBar} from "../../context/AppBarContext.tsx";
 import {useEffect} from "react";
 import {FormattedRelativeTime} from "react-intl";
 
-export interface PaymentsListProps{
+export interface PaymentsListProps {
     remainingHeight: string
 }
 
@@ -58,18 +58,26 @@ const PaymentsList = ({remainingHeight}: PaymentsListProps) => {
                 }}>
                 {executing && loading()}
                 {payments && payments.length <= 0 && <EmptyList/>}
-                {payments && payments.map(([week, value]) => {
+                {payments && payments.map(({week, payments, amount}) => {
                     return (
                         <li>
                             <ul>
                                 {week === 0 ?
-                                    <ListSubheader>Diese Woche</ListSubheader>
+                                    <ListSubheader>
+                                        <Box sx={{display: "flex", justifyContent: "space-between", width: "100%"}}>
+                                            <span>Diese Woche</span>
+                                            <span>Gesamt: {amount} €</span>
+                                        </Box>
+                                    </ListSubheader>
                                     : <ListSubheader>
-                                        <FormattedRelativeTime value={week * -1} unit="week"/>
+                                        <Box sx={{display: "flex", justifyContent: "space-between", width: "100%"}}>
+                                            <span><FormattedRelativeTime value={week * -1} unit="week"/></span>
+                                            <span>Gesamt: {amount} €</span>
+                                        </Box>
                                     </ListSubheader>
                                 }
 
-                                {value.map(payment => <PaymentListElement payment={payment}/>)}
+                                {payments.map(payment => <PaymentListElement payment={payment}/>)}
                             </ul>
                         </li>
                     )

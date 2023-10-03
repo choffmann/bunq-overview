@@ -4,6 +4,11 @@ import {firebaseApp} from "../firebase/firebaseSetup.ts";
 import {Payment} from "../model/Payment.ts";
 import {useQuery} from "react-query";
 
+export interface PaymentWeeks {
+    payments: Payment[]
+    amount: number
+}
+
 export function useBunqPayments(accountId: number) {
     const [executeCallable] = useHttpsCallable(getFunctions(firebaseApp), `bunqPayments`);
 
@@ -36,7 +41,16 @@ export function useBunqPayments(accountId: number) {
             }
         })
 
-        return Array.from(map)
+        return Array.from(map).map(([key, payments]) => {
+            let amount = 0
+            payments.filter(payment => parseInt(payment.amount.value) <= 0)
+                .map(payment => parseFloat(payment.amount.value) * -1)
+                .forEach(payment => {
+                    amount += payment
+                })
+
+            return {week: key, payments, amount: amount.toFixed(2)}
+        })
     };
 
     const {data, isFetching, error} = useQuery<Payment[]>(["payments"], callable)
