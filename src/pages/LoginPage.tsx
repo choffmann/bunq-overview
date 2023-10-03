@@ -1,29 +1,48 @@
 import {Box, Button, CircularProgress, Paper, Stack, TextField, Typography, Container} from "@mui/material";
 import {Google} from "@mui/icons-material";
-import {AuthError} from "firebase/auth";
 import {useState} from "react";
+import {useSignInWithEmailAndPassword, useSignInWithGoogle} from "react-firebase-hooks/auth";
+import {auth} from "../firebase/firebaseSetup.ts";
+import {useNotify} from "../context/NotificationContext.tsx";
+import {useNavigate} from "react-router-dom";
 
 export interface LoginPageProps {
-    submit: {
-        onClick: (loginData: LoginFormData) => void
-        loading: boolean
-        error?: AuthError
-    }
-    google: {
-        onClick: () => void
-        loading: boolean
-        error?: AuthError
-    }
+
 }
 
-export interface LoginFormData {
-    username: string
-    password: string
-}
-
-const LoginPage = ({submit, google}: LoginPageProps) => {
+const LoginPage = ({}: LoginPageProps) => {
+    const notify = useNotify()
+    const navigate = useNavigate()
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
+    const [signInWithGoogle, _g, googleLoading] = useSignInWithGoogle(auth);
+    const [signInWithEmail, _e, emailLoading] = useSignInWithEmailAndPassword(auth)
+
+    const onSubmit = () => {
+        signInWithEmail(username, password)
+            .then(res => {
+                if (res) {
+                    sessionStorage.setItem("auth", JSON.stringify(res))
+                    navigate("/")
+                }
+            })
+            .catch(err => {
+                console.error(err)
+            })
+    }
+
+    const onGoogleSubmit = () => {
+        signInWithGoogle()
+            .then(res => {
+                if (res) {
+                    navigate("/")
+                }
+            })
+            .catch(err => {
+                notify("Es ist ein Fehler beim der Anmeldung aufgetreten")
+                console.error(err)
+            })
+    }
 
     return (
         <Container>
@@ -49,17 +68,17 @@ const LoginPage = ({submit, google}: LoginPageProps) => {
                                        onChange={(event) => setUsername(event.target.value)}/>
                             <TextField variant="outlined" label="Passwort" type="password" value={password}
                                        onChange={(event) => setPassword(event.target.value)}/>
-                            <Button onClick={() => submit.onClick({username, password})}
+                            <Button onClick={() => onSubmit()}
                                     variant="contained"
-                                    disabled={submit.loading}
-                                    startIcon={submit.loading && <CircularProgress size={20} color="inherit"/>}
+                                    disabled={emailLoading}
+                                    startIcon={emailLoading && <CircularProgress size={20} color="inherit"/>}
                             >
                                 Anmelden
                             </Button>
-                            <Button onClick={() => google.onClick()}
+                            <Button onClick={() => onGoogleSubmit()}
                                     variant="outlined"
-                                    disabled={google.loading}
-                                    startIcon={google.loading ? <CircularProgress size={20} color="inherit"/> :
+                                    disabled={googleLoading}
+                                    startIcon={googleLoading ? <CircularProgress size={20} color="inherit"/> :
                                         <Google/>}
                             >
                                 Mit Google anmelden

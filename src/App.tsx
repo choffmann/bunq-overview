@@ -1,6 +1,5 @@
 import MonetaryAccountContainer from "./components/MonetaryAccountContainer.tsx";
 import BunqView from "./pages/BunqView.tsx";
-import AuthProvider from "./components/AuthProvider.tsx";
 import {CssBaseline} from "@mui/material";
 import NotificationContextProvider from "./context/NotificationContext.tsx";
 import AppBarContextProvider from "./context/AppBarContext.tsx";
@@ -16,6 +15,8 @@ import SettingsProfilePage from "./pages/settings/SettingsProfilePage.tsx";
 import SettingsPageLayout from "./pages/settings/SettingsPageLayout.tsx";
 import SettingsAdminCenterPage from "./pages/settings/SettingsAdminCenterPage.tsx";
 import {IntlProvider} from "react-intl";
+import LoginPage from "./pages/LoginPage.tsx";
+import AuthContextProvider from "./context/AuthContext.tsx";
 
 function App() {
     const client = new QueryClient()
@@ -26,10 +27,13 @@ function App() {
                 <IntlProvider locale={navigator.language}>
                     <NotificationContextProvider>
                         <QueryClientProvider client={client}>
-                            <AuthProvider>
-                                <BrowserRouter>
+                            <BrowserRouter>
+                                <AuthContextProvider>
                                     <AppBarContextProvider>
                                         <Routes>
+                                            <Route path="/login">
+                                                <Route index element={<LoginPage/>}/>
+                                            </Route>
                                             <Route path="/" element={<Layout/>}>
                                                 <Route index element={
                                                     <MonetaryAccountContainer>
@@ -47,8 +51,8 @@ function App() {
                                         </Routes>
                                         {import.meta.env.DEV && <ReactQueryDevtools/>}
                                     </AppBarContextProvider>
-                                </BrowserRouter>
-                            </AuthProvider>
+                                </AuthContextProvider>
+                            </BrowserRouter>
                         </QueryClientProvider>
                     </NotificationContextProvider>
                 </IntlProvider>

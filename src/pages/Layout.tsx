@@ -3,6 +3,7 @@ import AppDrawer from "../components/appbar/AppDrawer.tsx";
 import {Outlet} from "react-router-dom";
 import {useAppBar} from "../context/AppBarContext.tsx";
 import {useEffect} from "react";
+import PrivateRoute from "./routes/PrivateRoute.tsx";
 
 interface LayoutProps {
 }
@@ -15,12 +16,14 @@ const Layout = ({}: LayoutProps) => {
     }, []);
 
     return (
-        <>
-            <TopAppBar/>
-            <AppDrawer>
-                <Outlet/>
-            </AppDrawer>
-        </>
+        <PrivateRoute>
+            <>
+                <TopAppBar/>
+                <AppDrawer>
+                    <Outlet/>
+                </AppDrawer>
+            </>
+        </PrivateRoute>
     )
 }
 
