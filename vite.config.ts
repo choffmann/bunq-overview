@@ -98,6 +98,10 @@ export default ({mode}: ConfigEnv) => {
         process.env.VITE_APP_BUILD_DATETIME = gitBuildDateTime
     }
 
+    if (mode === "development") {
+        process.env.VITE_DEV_HOST_ADDRESS = execSync("ip -o route get to 8.8.8.8 | sed -n 's/.*src \\([0-9.]\\+\\).*/\\1/p'").toString().trimEnd()
+    }
+
     return defineConfig({
         base: "./",
         plugins: [react(), VitePWA(pwaManifest)],

@@ -17,7 +17,8 @@ export const functions = getFunctions(firebaseApp)
 export const db = getFirestore(firebaseApp)
 
 if (import.meta.env.DEV) {
-    connectAuthEmulator(auth, "http://localhost:9099")
-    connectFunctionsEmulator(functions, "localhost", 5001)
-    connectFirestoreEmulator(db, "localhost", 8080)
+    const hostAddress = import.meta.env.VITE_DEV_HOST_ADDRESS || "localhost"
+    connectAuthEmulator(auth, `http://${hostAddress}:9099`)
+    connectFunctionsEmulator(functions, hostAddress, 5001)
+    connectFirestoreEmulator(db, hostAddress, 8080)
 }
