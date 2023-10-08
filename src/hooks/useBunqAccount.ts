@@ -6,8 +6,13 @@ import {useQuery} from "react-query";
 
 export function useBunqAccount() {
     const [executeCallable] = useHttpsCallable(getFunctions(firebaseApp), `bunqAccount`)
-    const executeFunction = () => executeCallable().then(res => res?.data as MonetaryAccountBank)
-    const {data, isFetching, error} = useQuery<MonetaryAccountBank>(["monetaryBankAccount"], executeFunction)
+    const executeFunction = () => executeCallable()
+        .then(res => res?.data as MonetaryAccountBank)
 
-    return {monetaryAccount: data, executing: isFetching, error}
+    const {data, isLoading, error} =
+        useQuery<MonetaryAccountBank>(["monetaryBankAccount"], executeFunction, {
+            staleTime: 300000 // 5 min
+        })
+
+    return {monetaryAccount: data, isLoading, error}
 }

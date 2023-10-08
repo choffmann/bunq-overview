@@ -21,11 +21,11 @@ export interface PaymentsListProps {
 const PaymentsList = ({remainingHeight}: PaymentsListProps) => {
     const appBar = useAppBar()
     const {data} = useMonetaryAccountContext()
-    const {payments, executing} = useBunqPayments(data.id)
+    const {payments, isLoading} = useBunqPayments(data.id)
 
     useEffect(() => {
-        appBar.loading.setLoading(executing)
-    }, [executing]);
+        appBar.loading.setLoading(isLoading)
+    }, [isLoading]);
 
 
     const EmptyList = () =>
@@ -56,7 +56,7 @@ const PaymentsList = ({remainingHeight}: PaymentsListProps) => {
                     '& ul': {padding: 0},
                     '&::-webkit-scrollbar': {display: "none"}
                 }}>
-                {executing && loading()}
+                {isLoading && loading()}
                 {payments && payments.length <= 0 && <EmptyList/>}
                 {payments && payments.map(({week, payments, amount}) => {
                     return (

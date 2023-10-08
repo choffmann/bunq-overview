@@ -53,7 +53,9 @@ export function useBunqPayments(accountId: number) {
         })
     };
 
-    const {data, isFetching, error} = useQuery<Payment[]>(["payments"], callable)
+    const {data, isLoading, error} = useQuery<Payment[]>(["payments"], callable, {
+        staleTime: 300000 // 5 min
+    })
 
-    return {payments: splitToWeeks(data || []), executing: isFetching, error}
+    return {payments: splitToWeeks(data || []), isLoading, error}
 }

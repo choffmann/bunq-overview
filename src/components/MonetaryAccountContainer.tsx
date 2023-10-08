@@ -7,7 +7,7 @@ export interface MonetaryAccountContainerProps {
 }
 
 const MonetaryAccountContainer = ({children}: MonetaryAccountContainerProps) => {
-    const {monetaryAccount, executing, error} = useBunqAccount()
+    const {monetaryAccount, isLoading, error} = useBunqAccount()
 
     const createProvider = (monetaryAccount: MonetaryAccountContextProps) => {
         return (
@@ -19,7 +19,7 @@ const MonetaryAccountContainer = ({children}: MonetaryAccountContainerProps) => 
 
     return (
         <>
-            {monetaryAccount && createProvider({data: monetaryAccount, isError: error !== undefined, isFetching: executing})}
+            {monetaryAccount && createProvider({data: monetaryAccount, isError: error !== undefined, isFetching: isLoading})}
         </>
     )
 
