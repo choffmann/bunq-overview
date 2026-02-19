@@ -1,0 +1,73 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    extra_hosts:
+      - "localhost:host-gateway"
+    environment:
+      - DATABASE_URL=postgresql://bunq:bunq_secret@db:5432/bunq_overview
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - KEYCLOAK_CLIENT_ID=bunq-overview-web
+      - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
+      - KEYCLOAK_ISSUER=http://localhost:8180/realms/bunq-overview
+      - BUNQ_API_KEY=${BUNQ_API_KEY}
+      - BUNQ_API_URL=${BUNQ_API_URL}
+      - BUNQ_IBAN=${BUNQ_IBAN}
+      - ADMIN_USER_ID=${ADMIN_USER_ID}
+    depends_on:
+      db:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=bunq
+      - POSTGRES_PASSWORD=bunq_secret
+      - POSTGRES_DB=bunq_overview
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init-keycloak-db.sql:/docker-entrypoint-initdb.d/init-keycloak-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bunq -d bunq_overview"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    command: start-dev --import-realm
+    environment:
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://db:5432/keycloak
+      - KC_DB_USERNAME=bunq
+      - KC_DB_PASSWORD=bunq_secret
+      - KC_HOSTNAME=http://localhost:8180
+      - KC_HTTP_ENABLED=true
+      - KC_HEALTH_ENABLED=true
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    ports:
+      - "8180:8080"
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/9000 && echo -e 'GET /health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && cat <&3 | grep -q '200'"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 30s
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

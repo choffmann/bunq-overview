@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model BunqTokens {
+  id                Int      @id @default(1)
+  privateKey        String   @db.Text
+  publicKey         String   @db.Text
+  installationToken String
+  deviceId          Int
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("bunq_tokens")
+}
+
+model BunqSession {
+  id           Int      @id @default(1)
+  sessionToken String
+  userId       Int
+  expiryTime   DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("bunq_session")
+}

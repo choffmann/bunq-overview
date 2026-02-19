@@ -1,0 +1,259 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Bricolage Grotesque", serif;
+  --font-body: "DM Sans", sans-serif;
+  --color-gold: #d4a053;
+  --color-gold-light: #e8c17a;
+  --color-gold-dark: #b87d33;
+}
+
+/* ── Light theme ── */
+:root {
+  --bg: #f8f6f1;
+  --bg-secondary: #efece5;
+  --card: #ffffff;
+  --card-hover: #fdfcfa;
+  --text-primary: #1a1816;
+  --text-secondary: #6b6560;
+  --text-tertiary: #9a9590;
+  --border: #e5e0d8;
+  --border-subtle: #eeebe5;
+  --gold-glow: rgba(212, 160, 83, 0.2);
+  --gold-muted: rgba(212, 160, 83, 0.08);
+  --positive: #2a9d6e;
+  --negative: #c74a4a;
+  --glass-bg: rgba(248, 246, 241, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --shadow-sm: 0 1px 3px rgba(26, 24, 22, 0.04), 0 0 0 1px rgba(26, 24, 22, 0.02);
+  --shadow-md: 0 4px 16px rgba(26, 24, 22, 0.06), 0 0 0 1px rgba(26, 24, 22, 0.03);
+  --shadow-lg: 0 12px 40px rgba(26, 24, 22, 0.1), 0 0 0 1px rgba(26, 24, 22, 0.04);
+  --shadow-gold: 0 4px 24px rgba(212, 160, 83, 0.2);
+  --gradient-balance: linear-gradient(145deg, #2a2725 0%, #1e1c19 40%, #252220 80%, #1a1816 100%);
+}
+
+/* ── Dark theme ── */
+.dark {
+  --bg: #0a0908;
+  --bg-secondary: #111010;
+  --card: #151412;
+  --card-hover: #1b1a17;
+  --text-primary: #ede9e0;
+  --text-secondary: #908a82;
+  --text-tertiary: #5a5550;
+  --border: #252220;
+  --border-subtle: #1c1a18;
+  --gold-glow: rgba(212, 160, 83, 0.1);
+  --gold-muted: rgba(212, 160, 83, 0.06);
+  --positive: #3cc88a;
+  --negative: #e06060;
+  --glass-bg: rgba(12, 11, 9, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.04);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.02);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.02);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.03);
+  --shadow-gold: 0 4px 24px rgba(212, 160, 83, 0.06);
+  --gradient-balance: linear-gradient(145deg, #1e1c19 0%, #252220 35%, #1a1816 70%, #151412 100%);
+}
+
+/* Tailwind v4 preflight handles box-sizing, margin & padding resets.
+   Do NOT add an unlayered * reset — it overrides all layered utilities. */
+
+html {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.011em;
+  line-height: 1.5;
+}
+
+/* Subtle noise grain overlay for tactile depth */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.022;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+
+/* ── Keyframes ── */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slide-up-toast {
+  from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes loading-bar {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(100%); }
+  100% { transform: translateX(400%); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(10px, -15px) scale(1.03); }
+  66% { transform: translate(-8px, 10px) scale(0.97); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.65; }
+}
+
+@keyframes logo-appear {
+  from { opacity: 0; transform: scale(0.82) rotate(-2deg); }
+  to { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ── Animation utilities ── */
+.animate-fade-in {
+  animation: fade-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-slide-up-toast {
+  animation: slide-up-toast 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-loading-bar {
+  animation: loading-bar 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, var(--border-subtle) 25%, var(--border) 50%, var(--border-subtle) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+.animate-logo {
+  animation: logo-appear 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Stagger delays */
+.stagger-1 { animation-delay: 60ms; }
+.stagger-2 { animation-delay: 120ms; }
+.stagger-3 { animation-delay: 180ms; }
+.stagger-4 { animation-delay: 240ms; }
+.stagger-5 { animation-delay: 300ms; }
+.stagger-6 { animation-delay: 360ms; }
+.stagger-7 { animation-delay: 420ms; }
+.stagger-8 { animation-delay: 480ms; }
+
+/* ── Scrollbar ── */
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Glass effect ── */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+}
+
+/* ── Balance card: premium dark gradient with gold radials ── */
+.balance-card {
+  background: var(--gradient-balance);
+  position: relative;
+  overflow: hidden;
+}
+
+.balance-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -25%;
+  width: 75%;
+  height: 140%;
+  background: radial-gradient(ellipse at center, rgba(212, 160, 83, 0.14) 0%, transparent 60%);
+  animation: pulse-glow 7s ease-in-out infinite;
+}
+
+.balance-card::after {
+  content: '';
+  position: absolute;
+  bottom: -40%;
+  left: -15%;
+  width: 55%;
+  height: 100%;
+  background: radial-gradient(ellipse at center, rgba(212, 160, 83, 0.06) 0%, transparent 60%);
+  animation: pulse-glow 10s ease-in-out infinite 3s;
+}
+
+/* ── Gold gradient button ── */
+.btn-gold {
+  background: linear-gradient(135deg, #d4a053 0%, #c08b3f 50%, #d4a053 100%);
+  background-size: 200% 200%;
+  background-position: 0% 50%;
+  color: #fff;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 2px 16px rgba(212, 160, 83, 0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+}
+
+.btn-gold:hover {
+  background-position: 100% 50%;
+  box-shadow: 0 6px 28px rgba(212, 160, 83, 0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+  transform: translateY(-1px);
+}
+
+.btn-gold:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 1px 8px rgba(212, 160, 83, 0.2);
+}
+
+/* ── Login atmospheric orbs ── */
+.login-orb-1 { animation: float 14s ease-in-out infinite; }
+.login-orb-2 { animation: float 18s ease-in-out infinite 5s; }

@@ -1,47 +1,35 @@
 {
-  "name": "frontend",
+  "name": "bunq-overview",
+  "version": "0.1.0",
   "private": true,
-  "workspaces": [
-    "functions"
-  ],
-  "version": "0.0.1",
-  "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "build:release": "vite build --mode release",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview",
-    "deploy": "yarn build && firebase deploy",
-    "emulate": "firebase emulators:start"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:migrate": "prisma migrate dev",
+    "db:push": "prisma db push",
+    "db:generate": "prisma generate",
+    "db:studio": "prisma studio",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@emotion/react": "^11.11.1",
-    "@emotion/styled": "^11.11.0",
-    "@fontsource/roboto": "^5.0.5",
-    "@mui/icons-material": "^5.14.1",
-    "@mui/material": "^5.14.1",
-    "firebase": "^10.3.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-firebase-hooks": "^5.1.1",
-    "react-intl": "^6.4.7",
-    "react-query": "^3.39.3",
-    "react-router-dom": "^6.15.0"
+    "@prisma/client": "~6.19.0",
+    "@tanstack/react-query": "^5.66.9",
+    "lucide-react": "^0.474.0",
+    "next": "^15.2.1",
+    "next-auth": "^4.24.11",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@types/react": "^18.2.15",
-    "@types/react-dom": "^18.2.7",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-    "@vitejs/plugin-react": "^4.0.3",
-    "eslint": "^8.45.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.3",
-    "typescript": "^5.0.2",
-    "vite": "^4.4.5",
-    "vite-plugin-pwa": "^0.16.4",
-    "workbox-window": "^7.0.0"
-  },
-  "packageManager": "yarn@3.6.3"
+    "@tailwindcss/postcss": "^4.0.9",
+    "@types/node": "^22.13.5",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "postcss": "^8.5.3",
+    "prisma": "~6.19.0",
+    "tailwindcss": "^4.0.9",
+    "typescript": "^5.7.3"
+  }
 }
