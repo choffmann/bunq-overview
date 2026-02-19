@@ -5,6 +5,7 @@ import type { Payment } from "@/types/payment";
 interface PaymentItemProps {
   payment: Payment;
   index?: number;
+  onClick?: () => void;
 }
 
 const dateFormat = new Intl.DateTimeFormat("de-DE", {
@@ -12,7 +13,7 @@ const dateFormat = new Intl.DateTimeFormat("de-DE", {
   month: "short",
 });
 
-export function PaymentItem({ payment, index = 0 }: PaymentItemProps) {
+export function PaymentItem({ payment, index = 0, onClick }: PaymentItemProps) {
   const avatarImage =
     payment.counterparty_alias?.avatar?.image?.[0]?.urls?.[0]?.url;
   const amount = parseFloat(payment.amount.value);
@@ -23,8 +24,10 @@ export function PaymentItem({ payment, index = 0 }: PaymentItemProps) {
   const staggerClass = index < 8 ? `stagger-${index + 1}` : "";
 
   return (
-    <div
-      className={`flex items-center gap-3.5 px-4 py-3.5 hover:bg-[var(--gold-muted)] transition-colors duration-150 animate-fade-in-up ${staggerClass} border-b border-[var(--border-subtle)] last:border-b-0`}
+    <button
+      type="button"
+      onClick={onClick}
+      className={`w-full flex items-center gap-3.5 px-4 py-3.5 hover:bg-[var(--gold-muted)] active:bg-[var(--gold-muted)] transition-colors duration-150 animate-fade-in-up ${staggerClass} border-b border-[var(--border-subtle)] last:border-b-0 text-left cursor-pointer`}
     >
       {/* Avatar */}
       {avatarImage ? (
@@ -54,12 +57,12 @@ export function PaymentItem({ payment, index = 0 }: PaymentItemProps) {
         className={`text-[13px] font-semibold tabular-nums whitespace-nowrap ${
           isPositive
             ? "text-[var(--positive)]"
-            : "text-[var(--text-primary)]"
+            : "text-[var(--negative)]"
         }`}
       >
         {isPositive ? "+" : ""}
         {payment.amount.value} €
       </span>
-    </div>
+    </button>
   );
 }

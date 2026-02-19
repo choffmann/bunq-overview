@@ -15,9 +15,9 @@ export function BalanceCard({ balance, onInfoClick }: BalanceCardProps) {
   }
 
   return (
-    <div className="balance-card w-full max-w-sm rounded-2xl p-7 text-white shadow-[var(--shadow-lg)] animate-fade-in-up">
+    <div className="balance-card w-full max-w-sm rounded-2xl px-5 py-5 text-white shadow-[var(--shadow-lg)] animate-fade-in-up">
       <div className="relative z-10">
-        <div className="flex items-start justify-between mb-5">
+        <div className="flex items-start justify-between mb-3">
           <p className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-semibold">
             Kontostand
           </p>
@@ -30,13 +30,13 @@ export function BalanceCard({ balance, onInfoClick }: BalanceCardProps) {
           </button>
         </div>
         <div className="flex items-baseline gap-2">
-          <p className="font-display text-[42px] font-bold tracking-tight leading-none">
+          <p className="font-display text-[36px] font-bold tracking-tight leading-none">
             {balance}
           </p>
-          <span className="text-base font-normal text-white/30">EUR</span>
+          <span className="text-sm font-normal text-white/30">EUR</span>
         </div>
         {/* Gold accent divider */}
-        <div className="mt-6 h-px bg-gradient-to-r from-gold/25 via-gold/10 to-transparent" />
+        <div className="mt-4 h-px bg-gradient-to-r from-gold/25 via-gold/10 to-transparent" />
       </div>
     </div>
   );

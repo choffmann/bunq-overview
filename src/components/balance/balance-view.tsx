@@ -17,7 +17,7 @@ export function BalanceView({ monetaryAccount }: BalanceViewProps) {
     "Keine IBAN vorhanden";
 
   return (
-    <div className="flex justify-center px-4 pt-5">
+    <div className="flex justify-center px-4 pt-3">
       <BalanceCard
         balance={monetaryAccount?.balance.value}
         onInfoClick={() => setShowDialog(true)}

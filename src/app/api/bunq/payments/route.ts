@@ -14,10 +14,15 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "accountId is required" }, { status: 400 });
   }
 
+  const count = Math.min(
+    parseInt(request.nextUrl.searchParams.get("count") || "50", 10),
+    200
+  );
+
   const api = new BunqApiContext();
   await api.initialize();
 
-  const result = await api.payments(accountId);
+  const result = await api.payments(accountId, count);
 
   if (result.error) {
     return NextResponse.json(result, { status: 500 });

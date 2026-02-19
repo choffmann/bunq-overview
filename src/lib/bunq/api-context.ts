@@ -210,10 +210,10 @@ export class BunqApiContext {
     }
   }
 
-  async payments(monetaryId: string): Promise<ApiResponse<Payment[]>> {
+  async payments(monetaryId: string, count = 50): Promise<ApiResponse<Payment[]>> {
     try {
       const data = await this.fetchAuthenticated(
-        `/user/${this.session.userId}/monetary-account/${monetaryId}/payment?count=50`
+        `/user/${this.session.userId}/monetary-account/${monetaryId}/payment?count=${count}`
       );
 
       const payments = data.Response.map((v: any) => v.Payment as Payment);
