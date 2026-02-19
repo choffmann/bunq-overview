@@ -101,6 +101,12 @@ export class BunqApiContext {
     await sessionRepository.save(this.session);
   }
 
+  private sign(body: string): string {
+    const sign = crypto.createSign("sha256");
+    sign.update(body);
+    return sign.sign(this.tokens.privateKey, "base64");
+  }
+
   private async fetchBunq(path: string, options: RequestInit): Promise<BunqApiResponse> {
     const res = await fetch(this.apiUrl + path, options);
     const data: BunqApiResponse = await res.json();
@@ -109,6 +115,18 @@ export class BunqApiContext {
       throw new Error(`bunq API: ${data.Error.error_description}`);
     }
     return data;
+  }
+
+  private async fetchAuthenticated(path: string): Promise<BunqApiResponse> {
+    const body = "";
+    return this.fetchBunq(path, {
+      method: "GET",
+      headers: {
+        ...DEFAULT_HEADERS,
+        "X-Bunq-Client-Authentication": this.session.sessionToken,
+        "X-Bunq-Client-Signature": this.sign(body),
+      },
+    });
   }
 
   private generateKeyPair(): void {
@@ -152,15 +170,12 @@ export class BunqApiContext {
 
   private async sessionRequest(): Promise<void> {
     const body = JSON.stringify({ secret: this.apiKey });
-    const sign = crypto.createSign("sha256");
-    sign.update(body);
-    const sig = sign.sign(this.tokens.privateKey, "base64");
 
     const data = await this.fetchBunq("/session-server", {
       method: "POST",
       headers: {
         ...DEFAULT_HEADERS,
-        "X-Bunq-Client-Signature": sig,
+        "X-Bunq-Client-Signature": this.sign(body),
         "X-Bunq-Client-Authentication": this.tokens.installationToken,
       },
       body,
@@ -176,18 +191,9 @@ export class BunqApiContext {
 
   async account(iban: string): Promise<ApiResponse<MonetaryAccountBank>> {
     try {
-      const res = await fetch(
-        `${this.apiUrl}/user/${this.session.userId}/monetary-account`,
-        {
-          method: "GET",
-          headers: {
-            ...DEFAULT_HEADERS,
-            "X-Bunq-Client-Authentication": this.session.sessionToken,
-          },
-        }
+      const data = await this.fetchAuthenticated(
+        `/user/${this.session.userId}/monetary-account`
       );
-      const data: BunqApiResponse = await res.json();
-      if (data.Error) throw data.Error;
 
       const accounts = data.Response
         .filter((v: any) => v.hasOwnProperty("MonetaryAccountBank"))
@@ -206,18 +212,9 @@ export class BunqApiContext {
 
   async payments(monetaryId: string): Promise<ApiResponse<Payment[]>> {
     try {
-      const res = await fetch(
-        `${this.apiUrl}/user/${this.session.userId}/monetary-account/${monetaryId}/payment?count=50`,
-        {
-          method: "GET",
-          headers: {
-            ...DEFAULT_HEADERS,
-            "X-Bunq-Client-Authentication": this.session.sessionToken,
-          },
-        }
+      const data = await this.fetchAuthenticated(
+        `/user/${this.session.userId}/monetary-account/${monetaryId}/payment?count=50`
       );
-      const data: BunqApiResponse = await res.json();
-      if (data.Error) throw data.Error;
 
       const payments = data.Response.map((v: any) => v.Payment as Payment);
       return { data: payments };
