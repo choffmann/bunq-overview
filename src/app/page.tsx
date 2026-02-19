@@ -12,7 +12,7 @@ export default function OverviewPage() {
   const { monetaryAccount, isFetching } = useBunqAccount();
 
   return (
-    <div className="min-h-[100dvh] flex flex-col">
+    <div className="h-[100dvh] flex flex-col overflow-hidden">
       <AppBar
         title="Übersicht"
         variant="menu"
@@ -21,10 +21,10 @@ export default function OverviewPage() {
       />
       <SideDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
 
-      <main className="flex-1 flex flex-col max-w-screen-md mx-auto w-full">
+      <main className="flex-1 flex flex-col max-w-screen-md mx-auto w-full min-h-0">
         {monetaryAccount && (
           <>
-            <div className="pb-3">
+            <div className="shrink-0 pb-3">
               <BalanceView monetaryAccount={monetaryAccount} />
             </div>
             <PaymentsList accountId={monetaryAccount.id} />
